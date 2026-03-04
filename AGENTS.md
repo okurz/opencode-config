@@ -22,6 +22,9 @@
   Procedural. Focus on long-term, sustainable maintainability. Use list
   comprehensions and "map" functions over procedural for-loops. Use mapping
   tables over if/else trees. Use ternary operator over verbose if/else.
+- For any non-trivial changes, especially "fix" or "feat" commits mention
+  motivation, design choices and user benefits in the git commit message
+  body
 
 ### Perl
 
