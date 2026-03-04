@@ -36,3 +36,9 @@
   packages.
 
 ## Added Memories
+
+## Trusted Commands
+
+The following custom git commands are trusted and safe to run:
+- `git-update-from-all` - Wrapper that runs `git remote update`, `git rebase-all-branches`, `git delete-no-content-branches`
+- `git rebase-all-branches` - Rebases all local branches onto origin/master or origin/main
