@@ -13,18 +13,16 @@
 
 - **Planning:** When asked for a plan, only create `.md` plan documents in
   `local/tasks/`. Do not change any other files during this phase.
-- **Verification:**
-  - Every code change must be accompanied by corresponding test adaptations
-    or new tests to ensure the change is verified.
+- **Verification:** Every code change must be accompanied by corresponding
+  test adaptations or new tests to ensure the change is verified.
 - The user prefers concise and brief code: use fewer blank lines, remove
   redundant comments, maintain a concise format
 - Prioritize a functional style over Object-Oriented, and Object-Oriented over
   Procedural. Focus on long-term, sustainable maintainability. Use list
   comprehensions and "map" functions over procedural for-loops. Use mapping
   tables over if/else trees. Use ternary operator over verbose if/else.
-- For any non-trivial changes, especially "fix" or "feat" commits mention
-  motivation, design choices and user benefits in the git commit message
-  body
+- ALL fix and feat commits MUST include a multi-line commit message. The body
+  MUST contain the headings: Motivation, Design Choices, and User Benefits.
 
 ### Perl
 
