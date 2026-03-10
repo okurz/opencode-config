@@ -24,6 +24,30 @@
 - ALL fix and feat commits MUST include a multi-line commit message. The body
   MUST contain the headings: Motivation, Design Choices, and User Benefits.
 
+### Test Discipline
+
+- Before creating new test files, use a search agent to check for redundant
+  coverage in existing test files. Only add tests that provide unique
+  coverage.
+- Prefer fewer, parametrized tests over many single-assertion functions.
+  This reduces file size and maintenance burden.
+
+### Commit Discipline
+
+- Do not commit until all verification steps (lint, typecheck, tests) have
+  passed. Fix issues first, then commit once — avoid commit-then-amend
+  cycles.
+- When a commit may need near-term follow-up changes (e.g. test
+  consolidation, style fixes), ask the user whether to commit now or wait
+  until changes are fully polished.
+
+### Plan Execution
+
+- When a plan document exists in `tasks/`, read it fully before starting. Do
+  not re-derive the plan from scratch.
+- When the user says they amended a plan, re-read the file to identify what
+  changed rather than guessing.
+
 ### Perl
 
 - omit parentheses for Test::More commands (e.g., use `is $a, $b,
