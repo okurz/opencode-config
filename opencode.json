@@ -7,7 +7,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "SUSE Ollama",
       "options": {
-        "baseURL": "{file:suse_ollama_url}"
+        "baseURL": "{file:suse_ollama_url}/v1"
       },
       "models": {
         "qwen3-embedding:4b": { "name": "qwen3-embedding:4b" },
