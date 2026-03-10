@@ -38,6 +38,42 @@
             "huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:65k": { "name": "Qwen3-Coder-30B-A3B-Instruct (GGUF)" },
             "Qwen3-Coder-30B-16k:latest": { "name": "Qwen3 Coder 30B 16k" }
         }
+    },
+    "ollama_okpc4": {
+        "npm": "@ai-sdk/openai-compatible",
+        "name": "Ollama (okpc4)",
+        "options": {
+            "baseURL": "http://okpc4.fritz.box:11434/v1",
+            "timeout": 600000
+        },
+        "models": {
+            "hf.co/unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M": { "name": "(no tools support) qwen3-coder-next" },
+            "qwen3-coder:30b": { "name": "(slow but good) qwen3-coder:30b" },
+            "qwen3-coder-30b-a3b-instruct-gguf-ud-q4_k_m-96k": { "name": "(faster than qwen3-coder default but did not call gh tool) qwen3-coder-30b-a3b-instruct-gguf-ud-q4_k_m-96k:latest" },
+            "qwen3.5:9b-q8_0-128k": { "name": "(broken tool calling, XML) qwen3.5:9b-q8_0" },
+            "qwen3.5:9b-q8_0-32k": { "name": "(broken tool calling, XML) qwen3.5:9b-q8_0-32k" },
+            "qwen3.5:9b-q8_0-64k": { "name": "(broken tool calling, XML) qwen3.5:9b-q8_0-64k" },
+            "qwen3.5:9b-q8_0-96k": {
+                "name": "(broken tool calling, XML) qwen3.5:9b-q8_0-96k",
+                "reasoning": false,
+                "think": false,
+                "tool_call": true
+
+            },
+            "qwen3.5:9b-q8_0-96k-tweaked-parser-and-parms": { "name": "(broken tool calling, XML) qwen3.5:9b-q8_0-96k-tweaked-parser-and-parms" },
+            "qwen3.5:27b-q4_K_M": { "name": "(very slow) qwen3.5:27b-q4_K_M" },
+            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q4_k_m-96k": { "name": "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q4_k_m-96k" },
+            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q3_k_m-96k": { "name": "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q3_k_m-96k" },
+            "qwen3.5-9b-claude-4.6-highiq-instruct.q8_0-32k": {
+                "name": "(does not support tools) qwen3.5-9b-claude-4.6-highiq-instruct.q8_0-32k",
+                "tools": true
+            }
+        }
+    },
+    "google": {
+        "options": {
+            "projectId": "{file:~/.suse_gemini_cloud_project_id}"
+        }
     }
   }
 }
