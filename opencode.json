@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-gemini-auth@latest", "@mohak34/opencode-notifier@latest"],
+  "plugin": ["opencode-gemini-auth@latest", "@mohak34/opencode-notifier@latest", "opencode-tps-meter@latest"],
   "snapshot": false,
   "provider": {
     "ollama": {
