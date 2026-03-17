@@ -4,7 +4,7 @@
 
 - `tasks/` or `local/tasks/`: Read/write for planning. NEVER run git add, git
   commit, git rm, or any deletion on this directory.
-- AGENTS.md: Do not version control.
+- AGENTS.md: Do not version control (unless already under version control).
 - Never run git clean or any command that deletes unversioned files. Ask for
   confirmation.
 - Never run any command using sudo.
@@ -21,8 +21,7 @@
   Procedural. Focus on long-term, sustainable maintainability. Use list
   comprehensions and "map" functions over procedural for-loops. Use mapping
   tables over if/else trees. Use ternary operator over verbose if/else.
-- ALL fix and feat commits MUST include a multi-line commit message. The body
-  MUST contain the headings: Motivation, Design Choices, and User Benefits.
+- Prioritize zero duplication and high maintainability for humans.
 
 ### Test Discipline
 
@@ -37,9 +36,21 @@
 - Do not commit until all verification steps (lint, typecheck, tests) have
   passed. Fix issues first, then commit once — avoid commit-then-amend
   cycles.
+- CRITICAL: Do not just read the top of the test output. You MUST verify the
+  command exit code is 0 and read the final 20 lines of the output for strict
+  threshold failures (like coverage drops) that might occur even if all
+  individual tests pass.
 - When a commit may need near-term follow-up changes (e.g. test
   consolidation, style fixes), ask the user whether to commit now or wait
   until changes are fully polished.
+- Never run git clean or any command that deletes unversioned files. Ask for
+  confirmation.
+- ALL fix and feat commits MUST include a multi-line commit message. The body
+  MUST contain the headings: Motivation, Design Choices, and User Benefits.
+- Commit message format: 50/80 rule, 80-char limit, wrap in single quotes.
+- If work is based on a ticket, reference the ticket in the commit message at
+  the bottom in a separate line in the format
+  `Related issue: <ticket_URL>`
 
 ### Plan Execution
 
@@ -51,8 +62,7 @@
 ### Perl
 
 - omit parentheses for Test::More commands (e.g., use `is $a, $b,
-'msg'` instead of `is($a, $b, 'msg')`). Prioritize zero duplication and high
-  maintainability for humans.
+'msg'` instead of `is($a, $b, 'msg')`).
 - When writing Perl tests, always prefer using Test::MockModule or
   Test::MockObject for mocking instead of creating custom mock classes or
   packages.
