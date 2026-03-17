@@ -30,13 +30,15 @@
         "name": "Ollama (local)",
         "options": {
             "baseURL": "http://localhost:11434/v1",
-            "timeout": 600000
+            "timeout": 1200000,
+            "chunkTimeout": 600000
         },
         "models": {
-            "qwen3.5:9b": { "name": "qwen3.5:9b" },
+            "qwen3.5:9b": { "name": "(broken tool calls) qwen3.5:9b" },
             "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest": { "name": "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest" },
             "huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:65k": { "name": "Qwen3-Coder-30B-A3B-Instruct (GGUF)" },
-            "Qwen3-Coder-30B-16k:latest": { "name": "Qwen3 Coder 30B 16k" }
+            "Qwen3-Coder-30B-16k:latest": { "name": "Qwen3 Coder 30B 16k" },
+            "qwen3-coder-next:ud-q2_k_xl.64k.fix_tools": { "name": "qwn3-cder-nxt.ud-q2_k_xl.64k.fix_tools" }
         }
     },
     "ollama_okpc4": {
@@ -44,7 +46,8 @@
         "name": "Ollama (okpc4)",
         "options": {
             "baseURL": "http://okpc4.fritz.box:11434/v1",
-            "timeout": 600000
+            "timeout": 600000,
+            "chunkTimeout": 600000
         },
         "models": {
             "hf.co/unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M": { "name": "(no tools support) qwen3-coder-next" },
@@ -62,13 +65,35 @@
             },
             "qwen3.5:9b-q8_0-96k-tweaked-parser-and-parms": { "name": "(broken tool calling, XML) qwen3.5:9b-q8_0-96k-tweaked-parser-and-parms" },
             "qwen3.5:27b-q4_K_M": { "name": "(very slow) qwen3.5:27b-q4_K_M" },
-            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q4_k_m-96k": { "name": "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q4_k_m-96k" },
-            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q3_k_m-96k": { "name": "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q3_k_m-96k" },
+            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q4_k_m-96k": { "name": "(medium-slow speed) qwen3.5-27b-cl-rsnng-dstlld-blnd.q4_k_m-96k" },
+            "qwen3.5-27b-claude-4.6-opus-reasoning-distilled-blind.q3_k_m-96k": { "name": "(medium speed) qwen3.5-27b-cl-rsnng-dstlled-bind.q3_k_m-96k" },
+            "hf.co/unsloth/Qwen3.5-35B-A3B-GGUF:UD-IQ3_S": { "name": "hf.co/unsloth/Qwen3.5-35B-A3B-GGUF:UD-IQ3_S" },
+            "qwen3.5-9b-cl-rsnng-dstlld-blnd.q8-96k": { "name": "(fast, sometimes broken tool calling, XML) qwen3.5-9b-cl-rsnng-dstlld-blnd.q8-96k" },
+            "qwen3.5-9b-gm-rsng-dstlld.Q8_0.96k": { "name": "(no tools support) qwen3.5-9b-gm-rsng-dstlld.Q8_0.96k" },
+            "qwen3.5-9b-gm-rsng-dstlld.Q8_0.96k-ollama-prompt": { "name": "qwen3.5-9b-gm-rsng-dstlld.Q8_0.96k-ollama-prompt" },
             "qwen3.5-9b-claude-4.6-highiq-instruct.q8_0-32k": {
                 "name": "(does not support tools) qwen3.5-9b-claude-4.6-highiq-instruct.q8_0-32k",
                 "tools": true
-            }
+            },
+            "qwen3-coder-next@q2_k_xl": { "name": "qwen3-coder-next:ud-q2_k_xl.64k.fix_tools" }
         }
+    },
+    "lmstudio_okpc4": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (okpc4)",
+      "options": {
+        "baseURL": "http://okpc4.fritz.box:1234/v1",
+        "timeout": 600000,
+        "chunkTimeout": 600000,
+        "apiKey": "{file:~/.lmstudio_okpc4_token}"
+      },
+      "models": {
+          "qwen/qwen3.5-35b-a3b": { "name": "(ok) qwen/qwen3.5-35b-a3b" },
+          "qwen3-coder-next@q4_k_s": { "name": "(slow) qwen3-coder-next@q4_k_s" },
+          "qwen3-coder-next@q3_k_m": { "name": "(slow) qwen3-coder-next@q3_k_m" },
+          "qwen3-coder-next@q2_k_xl": { "name": "qwen3-coder-next@q2_k_xl" },
+          "qwen/qwen3.5-9b": { "name": "qwen/qwen3.5-9b" }
+      }
     },
     "google": {
         "options": {
