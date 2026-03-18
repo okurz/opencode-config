@@ -37,11 +37,15 @@
 
 ### Test Discipline
 
+- **Clean Test Output:** Tests must not produce extraneous output (e.g.,
+  uncaptured log messages, warnings, or debug prints). Unexpected output is a
+  sign of incomplete test isolation or missing assertions. Verify that the
+  test runner output is "clean" (e.g., only "ok" or progress indicators).
 - Before creating new test files, use a search agent to check for redundant
   coverage in existing test files. Only add tests that provide unique
   coverage.
-- Prefer fewer, parametrized tests over many single-assertion functions.
-  This reduces file size and maintenance burden.
+- Prefer fewer, parametrized tests over many single-assertion functions. This
+  reduces file size and maintenance burden.
 
 ### Commit Discipline
 
@@ -51,7 +55,8 @@
 - CRITICAL: Do not just read the top of the test output. You MUST verify the
   command exit code is 0 and read the final 20 lines of the output for strict
   threshold failures (like coverage drops) that might occur even if all
-  individual tests pass.
+  individual tests pass. Additionally, ensure that the full test log is clean
+  of unexpected noise like uncaptured log output or warnings.
 - When a commit may need near-term follow-up changes (e.g. test
   consolidation, style fixes), ask the user whether to commit now or wait
   until changes are fully polished.
@@ -75,6 +80,9 @@
 
 - omit parentheses for Test::More commands (e.g., use `is $a, $b,
 'msg'` instead of `is($a, $b, 'msg')`).
+- Suppress or capture Mojolicious log output in tests unless the log message
+  itself is being tested. Use `MOJO_LOG_LEVEL=fatal` or mock the logger to keep
+  test output clean.
 - When writing Perl tests, always prefer using Test::MockModule or
   Test::MockObject for mocking instead of creating custom mock classes or
   packages.
