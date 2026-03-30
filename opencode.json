@@ -22,7 +22,8 @@
         "qwen3:8b": { "name": "qwen3:8b" },
         "qwen3-coder:latest": { "name": "qwen3-coder:latest" },
         "llama3.2:3b": { "name": "llama3.2:3b" },
-        "qwen3:14b": { "name": "qwen3:14b" }
+        "qwen3:14b": { "name": "qwen3:14b" },
+        "qwen3.5-35b-a3b-blind:ud-iq3_s.96k": { "name": "qwen3.5-35b-a3b-blind:ud-iq3_s.96k" }
       }
     },
     "ollama_local": {
@@ -34,11 +35,13 @@
             "chunkTimeout": 600000
         },
         "models": {
-            "qwen3.5:9b": { "name": "(broken tool calls) qwen3.5:9b" },
-            "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest": { "name": "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest" },
+            "qwen3.5:9b": { "name": "(broken tool calls, try qwen3.5:9b-fix-tools.96k) qwen3.5:9b" },
+            "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest": { "name": "(does not support tools) qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest" },
             "huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:65k": { "name": "Qwen3-Coder-30B-A3B-Instruct (GGUF)" },
             "Qwen3-Coder-30B-16k:latest": { "name": "Qwen3 Coder 30B 16k" },
-            "qwen3-coder-next:ud-q2_k_xl.64k.fix_tools": { "name": "qwn3-cder-nxt.ud-q2_k_xl.64k.fix_tools" }
+            "qwen3-coder-next:ud-q2_k_xl.64k.fix_tools": { "name": "qwn3-cder-nxt.ud-q2_k_xl.64k.fix_tools" },
+            "qwen3.5-35b-a3b-blind:ud-iq3_s.96k": { "name": "qwen3.5-35b-a3b-blind:ud-iq3_s.96k" },
+            "qwen3.5:9b-fix-tools.96k": { "name": "qwen3.5:9b-fix-tools.96k" }
         }
     },
     "ollama_okpc4": {
