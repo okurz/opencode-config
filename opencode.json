@@ -95,7 +95,9 @@
           "qwen3-coder-next@q4_k_s": { "name": "(slow) qwen3-coder-next@q4_k_s" },
           "qwen3-coder-next@q3_k_m": { "name": "(slow) qwen3-coder-next@q3_k_m" },
           "qwen3-coder-next@q2_k_xl": { "name": "qwen3-coder-next@q2_k_xl" },
-          "qwen/qwen3.5-9b": { "name": "qwen/qwen3.5-9b" }
+          "qwen/qwen3.5-9b": { "name": "qwen/qwen3.5-9b" },
+          "gemma-4-26b-a4b-it@iq3_s": { "name": "gemma-4-26b-a4b-it@iq3_s" },
+          "gemma-4-26b-a4b-it@iq2_m": { "name": "gemma-4-26b-a4b-it@iq2_m" }
       }
     },
     "google": {
