@@ -96,3 +96,17 @@
   not re-derive the plan from scratch.
 - When the user says they amended a plan, re-read the file to identify what
   changed rather than guessing.
+
+### Review Management
+
+- **Fetch Feedback**: Use the `gh` tool to fetch review comments from GitHub PRs.
+- **Direct Comment Targeting**: If a URL with `#discussion_r(\d+)` is provided, parse the ID and use `gh api repos/:owner/:repo/pulls/comments/:id` to fetch only that specific feedback and its context.
+- **Structured Address**: Create a plan in `tasks/` that explicitly lists all
+  reviewer suggestions as a checklist (or use `todowrite`) to ensure 100%
+  coverage of feedback.
+- **Fixup Commits**: For PRs already in review, default to using `git commit --fixup <commit_hash>`
+  to address feedback, unless a full rebase or new commit is explicitly requested.
+- **Verify-Implement-Verify**: For each suggestion, first verify the current
+  behavior/issue, implement the fix, and then verify again with tests and linting.
+- **No Force Push**: Never force push to a remote branch unless the user explicitly
+  confirms it is safe (e.g., in a personal feature branch).
