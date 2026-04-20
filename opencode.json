@@ -8,6 +8,23 @@
     }
   },
   "provider": {
+    "llama.cpp_local": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (local)",
+      "options": {
+        "baseURL": "http://localhost:8080/v1"
+      }
+    },
+    "llama_cpp_osd": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (osd)",
+      "options": {
+        "baseURL": "{file:suse_osd_llm_url}/v1"
+      },
+      "models": {
+        "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M": { "name": "Qwen3.6-35B-A3B-GGUF" }
+      }
+    },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "SUSE Ollama",
