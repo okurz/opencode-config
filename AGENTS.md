@@ -103,7 +103,7 @@
 
 ### Review Management
 
-- **Evaluate Feedback First**: Do not blindly implement reviewer suggestions. First, evaluate whether the comment makes sense and aligns with the codebase. If the comment is questionable, unclear, or you disagree with it, pause and discuss it with the user before starting implementation.
+- **Evaluate Feedback First**: Do not blindly implement reviewer suggestions. First, review the original commit messages and design choices to understand the context. Evaluate whether the comment makes sense and aligns with the codebase. You MUST always formulate an implementation plan and present it to the user for approval BEFORE executing any code changes or commits, regardless of how straightforward the comment seems.
 - **Fetch Feedback**: Use the `gh` tool to fetch review comments from GitHub PRs.
 - **Direct Comment Targeting**: If a URL with `#discussion_r(\d+)` is provided, parse the ID and use `gh api repos/:owner/:repo/pulls/comments/:id` to fetch only that specific feedback and its context.
 - **Structured Address**: Use the `todowrite` tool to explicitly list all
