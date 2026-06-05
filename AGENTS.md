@@ -39,6 +39,7 @@
   in `tasks/todo.md`. Increment this maximum by one (e.g., if the highest is
   061, use 062). If no numbers are found, start with 001. Do not change any
   other files during this phase.
+- **Task Atomicity**: When planning, break down complex requests into smaller, independent tasks that can be implemented and committed individually to ensure clear and focused commits.
 - **Verification**: Every code change must be accompanied by corresponding
   test adaptations or new tests to ensure the change is verified.
 - The user prefers concise and brief code: use fewer blank lines, remove
@@ -76,6 +77,7 @@
 
 ### Commit Discipline
 
+- **Atomic Commits**: Each commit MUST focus on a single conceptual change or task. Do not mix unrelated changes, such as bug fixes, logging improvements, and new features, into a single commit. If multiple unrelated changes are needed, implement and commit them sequentially.
 - Do not commit until all verification steps (lint, typecheck, tests) have
   passed. Fix issues first, then commit once — avoid commit-then-amend cycles.
 - CRITICAL: Do not just read the top of the test output. You MUST verify the
