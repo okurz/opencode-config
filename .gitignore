@@ -3,3 +3,4 @@ package.json
 bun.lock
 suse_ollama_url
 .opencode_web_password
+context-mode/
