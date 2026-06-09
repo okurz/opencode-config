@@ -42,8 +42,8 @@
 - **Task Atomicity**: When planning, break down complex requests into smaller, independent tasks that can be implemented and committed individually to ensure clear and focused commits.
 - **Verification**: Every code change must be accompanied by corresponding
   test adaptations or new tests to ensure the change is verified.
-- The user prefers concise and brief code: use fewer blank lines, remove
-  redundant comments, maintain a concise format. Prioritize self-explanatory
+- The user prefers concise and brief code, pull request descriptions, and comments: use fewer blank lines, remove
+  redundant comments, and maintain an concise format. Keep all comments, issue replies, PR descriptions, and reviews short and to the point (no long walls of text; reviewers skip them). Prioritize self-explanatory
   code (e.g., descriptive variable/function names, clear structure) over
   in-file comments. Comments should only be used to explain the *why* of
   complex logic, not the *what* of the code.
@@ -90,7 +90,7 @@
 - Never run git clean or any command that deletes unversioned files. Ask for
   confirmation.
 - ALL fix and feat commits MUST include a multi-line commit message. The body
-  MUST contain the headings: Motivation, Design Choices, and Benefits.
+  MUST contain the headings: Motivation, Design Choices, and Benefits. Be concise: write only 1-2 short sentences under each heading.
 - Commit message format: 50/80 rule. You MUST explicitly insert physical newlines to hard-wrap the body text at 80 characters.
 - To execute multi-line commits reliably without temporary files or interactive editors, ALWAYS use a bash heredoc via standard input: `git commit -F - <<EOF`.
 - After creating or amending a commit, run any project-specific commit linters (e.g. `make test-gitlint`). If the linter fails, use `git commit --amend -F - <<EOF` to fix the message.
