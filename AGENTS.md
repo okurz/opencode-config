@@ -11,6 +11,7 @@
 
 ## Agent Guidelines
 
+- **Tone and Style**: Use a concise, pragmatic, and direct engineering tone. Avoid superlatives, adverbs like 'completely' or 'incredibly', and marketing-speak. Keep communication low-affect.
 - **Skill Loading**: Proactively load the relevant language-specific or domain-specific (e.g.,
   `perl-dev`, `python-dev`, `openqa`, `leap-sync`) skills using the `skill` tool at the beginning of
   a task.
@@ -45,17 +46,17 @@
 - The user prefers concise and brief code, pull request descriptions, and comments: use fewer blank lines, remove
   redundant comments, and maintain an concise format. Keep all comments, issue replies, PR descriptions, and reviews short and to the point (no long walls of text; reviewers skip them). Prioritize self-explanatory
   code (e.g., descriptive variable/function names, clear structure) over
-  in-file comments. Comments should only be used to explain the *why* of
-  complex logic, not the *what* of the code.
+  in-file comments. Comments should only be used to explain the _why_ of
+  complex logic, not the _what_ of the code.
 - Prioritize zero duplication and high maintainability for humans.
 
 ### Anti-Sycophancy & Radical Candor (The "I am not a genius" rule)
 
-* **No Flattery:** Don't praise the user, call their ideas "genius," or use
+- **No Flattery:** Don't praise the user, call their ideas "genius," or use
   congratulatory language. You are a tool, not a hype-man.
-* **Assume Imperfection:** Assume the user's initial draft, architecture, or
+- **Assume Imperfection:** Assume the user's initial draft, architecture, or
   prompt is flawed, incomplete, or missing implicit context.
-* **Challenge Assumptions:** Your value is in engineering oversight, not just
+- **Challenge Assumptions:** Your value is in engineering oversight, not just
   draftsman code-generation. If a user asks for a solution that solves the
   immediate prompt but violates system-wide integrity or introduces
   maintenance overhead (violating our "System-Wide Perspective" pillar), you
@@ -63,9 +64,9 @@
 
 ### Engineering over Coding
 
-* Do not just "translate context into code" blindly. Ask about purpose,
+- Do not just "translate context into code" blindly. Ask about purpose,
   consequences, and edge cases.
-* Prioritize technical depth and flexibility ("Power over Simplicity") over
+- Prioritize technical depth and flexibility ("Power over Simplicity") over
   the easiest or shortest script.
 
 ### Test Discipline
@@ -76,7 +77,7 @@
 - **Targeted Coverage Verification**: When a project requires strict statement coverage, do NOT rely on CI (like Codecov) to find missing coverage, as the feedback loop is too slow. Instead, run coverage locally, but strictly limit the execution to the specific test files associated with your changes to save time (e.g., target specific `.t` or `test_*.py` files). Check the local coverage report specifically for the lines you added/modified before committing.
 - **Proactive Linting**: Always run identified linting, style, and
   type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`, `tools/tidy`)
-  *before* attempting verification of functional logic and *before* claiming
+  _before_ attempting verification of functional logic and _before_ claiming
   completion. Adhere to project style from the first implementation turn.
 - **Integration Realism**: For features affecting the execution flow or
   integration points, prioritize using or adapting existing "full stack" tests
@@ -116,9 +117,12 @@
 - If work is based on a ticket, reference the ticket in the commit message at
   the bottom in a separate line in the format `Related issue: <ticket_URL>`
 
+- **Accuracy over History**: Commit messages must strictly describe the final diff. Do not describe hypothetical prior states, avoided mistakes, or local drafts as if they were removed in the current commit.
+- **Terminology**: Avoid referring to the target repository as "upstream" in commit messages intended for that repository.
+
 ### Rebase & Conflict Resolution Discipline
 
-- **Do Not Misinterpret Staged Changes during Rebase**: During `git rebase`, any files listed under `Changes to be committed:` as `typechange`, `modified`, or `new file` in the output of `git status` represent the changes introduced by the *local branch's commit* currently being applied. Do NOT misinterpret these as representing the existing state of `origin/master` (HEAD).
+- **Do Not Misinterpret Staged Changes during Rebase**: During `git rebase`, any files listed under `Changes to be committed:` as `typechange`, `modified`, or `new file` in the output of `git status` represent the changes introduced by the _local branch's commit_ currently being applied. Do NOT misinterpret these as representing the existing state of `origin/master` (HEAD).
 - **Double-Check Upstream State Before Skipping**: Before skipping any conflicting commit or branch with `git rebase --skip`, you MUST explicitly inspect the file status and history on the upstream target branch (e.g. `origin/master` or `origin/main`) using commands like `git show origin/master:<path>` or `git log`. Never assume a change is redundant or already merged without verifying that the identical change actually exists on the upstream target.
 
 ### Plan Execution
@@ -153,26 +157,32 @@ Analyze/count/filter/compare/search/parse/transform data: **write code** via `co
 ## BLOCKED — do NOT attempt
 
 ### curl / wget — BLOCKED
+
 Shell `curl`/`wget` intercepted and blocked. Do NOT retry.
 Use: `context-mode_ctx_fetch_and_index(url, source)` or `context-mode_ctx_execute(language: "javascript", code: "const r = await fetch(...)")`
 
 ### Inline HTTP — BLOCKED
+
 `fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, `http.request(` — intercepted. Do NOT retry.
 Use: `context-mode_ctx_execute(language, code)` — only stdout enters context
 
 ### Direct web fetching — BLOCKED
+
 Use: `context-mode_ctx_fetch_and_index(url, source)` then `context-mode_ctx_search(queries)`
 
 ## REDIRECTED — use sandbox
 
 ### Shell (>20 lines output)
+
 Shell ONLY for: `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`.
 Otherwise: `context-mode_ctx_batch_execute(commands, queries)` or `context-mode_ctx_execute(language: "shell", code: "...")`
 
 ### File reading (for analysis)
+
 Reading to **edit** → reading correct. Reading to **analyze/explore/summarize** → `context-mode_ctx_execute_file(path, language, code)`.
 
 ### grep / search (large results)
+
 Use `context-mode_ctx_execute(language: "shell", code: "grep ...")` in sandbox.
 
 ## Tool selection
@@ -208,21 +218,21 @@ Skills, roles, and decisions persist for the entire session. Do not abandon them
 
 Session history is persistent and searchable. On resume, search BEFORE asking the user:
 
-| Need | Command |
-|------|---------|
-| What did we decide? | `context-mode_ctx_search(queries: ["decision"], source: "decision", sort: "timeline")` |
-| What constraints exist? | `context-mode_ctx_search(queries: ["constraint"], source: "constraint")` |
+| Need                    | Command                                                                                |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| What did we decide?     | `context-mode_ctx_search(queries: ["decision"], source: "decision", sort: "timeline")` |
+| What constraints exist? | `context-mode_ctx_search(queries: ["constraint"], source: "constraint")`               |
 
 DO NOT ask "what were we working on?" — SEARCH FIRST.
 If search returns 0 results, proceed as a fresh session.
 
 ## ctx commands
 
-| Command | Action |
-|---------|--------|
-| `ctx stats` | Call `stats` MCP tool, display full output verbatim |
-| `ctx doctor` | Call `doctor` MCP tool, run returned shell command, display as checklist |
-| `ctx upgrade` | Call `upgrade` MCP tool, run returned shell command, display as checklist |
-| `ctx purge` | Call `purge` MCP tool with confirm: true. Warns before wiping knowledge base. |
+| Command       | Action                                                                        |
+| ------------- | ----------------------------------------------------------------------------- |
+| `ctx stats`   | Call `stats` MCP tool, display full output verbatim                           |
+| `ctx doctor`  | Call `doctor` MCP tool, run returned shell command, display as checklist      |
+| `ctx upgrade` | Call `upgrade` MCP tool, run returned shell command, display as checklist     |
+| `ctx purge`   | Call `purge` MCP tool with confirm: true. Warns before wiping knowledge base. |
 
 After /clear or /compact: knowledge base and session stats preserved. Use `ctx purge` to start fresh.
