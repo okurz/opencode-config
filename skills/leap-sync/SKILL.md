@@ -16,7 +16,9 @@ Automate the update of openSUSE Leap packages from the Factory branch following 
    - Run `osc-sync-leap` to perform the sync and create PRs.
 3. **Verify and Resolve Dependencies**:
    - If builds fail due to missing dependencies, use `osc-get-pr-status <obs_project> <package>` to extract the unresolvables.
-   - Pipe the output to `osc-sync-deps` to get a list of source packages that need to be synced from Factory to Leap.
+   - **First, try to lower requirements**: Before syncing a dependency, check if the newer version is actually required by upstream. Extract `pyproject.toml` or `setup.py` from the `.obscpio` (e.g., `cpio -i --to-stdout */pyproject.toml < *.obscpio`). If the upstream requirement is lower than what the `.spec` file demands, lower the `%global <Dep>_version` in the `.spec` file (typically in the non-poetry `%else` block for Leap).
+   - **Second, sync dependencies**: If the dependency truly needs an update, pipe the output of `osc-get-pr-status` to `osc-sync-deps` to get a list of source packages that need to be synced from Factory to Leap.
+   - **Third, check linking errors**: If a Python package builds native extensions (e.g. via Rust/maturin) and linking fails with `unable to find library -lpython3.x`, this often means `abi3` compatibility is disabled. You must add `BuildRequires: %{use_python}-devel` to the `.spec` file so the linker can find `libpython`.
    - Recursively apply this workflow to those missing dependencies.
 
 ## Global Installation
