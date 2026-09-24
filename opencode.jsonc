@@ -144,6 +144,22 @@
         "options": {
             "projectId": "{file:~/.suse_gemini_cloud_project_id}"
         }
+    },
+    "google-vertex": {
+      "name": "Gemini (SUSE - Vertex)",
+      "options": {
+        "project": "{file:~/.vertex_project_id}",
+        "location": "global",
+        "googleAuthOptions": {
+          "keyFilename": "{env:HOME}/.config/gcloud/application_default_credentials.json"
+        }
+      },
+      "models": {
+        "gemini-3.5-flash": {},
+        "gemini-3.6-flash": {},
+        "gemini-3.7-flash": {},
+        "gemini-3.8-flash": {}
+      }
     }
   }
 }
