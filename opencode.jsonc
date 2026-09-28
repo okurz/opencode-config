@@ -32,7 +32,9 @@
         //"deepreinforce-ai/Ornith-1.0-35B-GGUF": { "name": "deepreinforce-ai/Ornith-1.0-35B-GGUF" }
         //"unsloth/Qwen3.8-27B-GGUF:IQ4_XS": { "name": "Qwen3.8-27B-GGUF:IQ4_XS" }
         //"unsloth/Qwen3.8-27B-GGUF:IQ2_XXS": { "name": "Qwen3.8-27B-GGUF:IQ2_XXS" }
-        "unsloth/Qwen3.8-27B-GGUF:Q8_0": { "name": "Qwen3.8-27B-GGUF:Q8_0" }
+        //"unsloth/Qwen3.8-27B-GGUF:Q8_0": { "name": "Qwen3.8-27B-GGUF:Q8_0" }
+        //"peculiar-ragdoll/Tiel-Coder-35B-A3B-GGUF:UD-Q4_K_XL": { "name": "Tiel-Coder-35B-A3B" }
+        "IsValorum/Tiel-Coder-35B-A3B-APEX-I-MiniPlus-V2.1-GGUF": { "name": "Tiel-Coder-MiniPlus" }
       }
     },
     "llama_cpp_prometheus": {
@@ -140,7 +142,8 @@
           "qwen3-coder-next@q2_k_xl": { "name": "qwen3-coder-next@q2_k_xl" },
           "qwen/qwen3.5-9b": { "name": "qwen/qwen3.5-9b" },
           "gemma-4-26b-a4b-it@iq3_s": { "name": "gemma-4-26b-a4b-it@iq3_s" },
-          "gemma-4-26b-a4b-it@iq2_m": { "name": "gemma-4-26b-a4b-it@iq2_m" }
+          "gemma-4-26b-a4b-it@iq2_m": { "name": "gemma-4-26b-a4b-it@iq2_m" },
+          "tiel-coder-35b-a3b-apex-i-miniplus-v2.1": { "name": "tiel-coder-35b-a3b-apex-i-miniplus-v2.1" }
       }
     },
     "google": {
