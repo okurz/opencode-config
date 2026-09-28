@@ -47,7 +47,8 @@
   redundant comments, and maintain an concise format. Keep all comments, issue replies, PR descriptions, and reviews short and to the point (no long walls of text; reviewers skip them). Prioritize self-explanatory
   code (e.g., descriptive variable/function names, clear structure) over
   in-file comments. Comments should only be used to explain the _why_ of
-  complex logic, not the _what_ of the code.
+  complex logic, not the _what_ of the code. In tests specifically, NEVER use
+  in-file comments; always use self-explanatory test description strings.
 - Prioritize zero duplication and high maintainability for humans.
 
 ### Anti-Sycophancy & Radical Candor (The "I am not a genius" rule)
@@ -95,6 +96,13 @@
 - Before creating new test files, use a search agent to check for redundant
   coverage in existing test files. Only add tests that provide unique
   coverage.
+- **Self-Explanatory Test Descriptions (NO in-file comments in tests)**:
+  NEVER add in-file comments to explain test steps, assertions, setup, or numbered
+  sections (e.g. `# 1. Direct JSON`, `# Assert fields`, `# Test error case`). Instead,
+  bake all context, intent, inputs, and expected outcomes directly into the test
+  description strings passed to test functions or subtests. In data-driven tests,
+  include a `desc` property in each case. The test runner output must be fully
+  self-documenting on its own without needing in-file comments.
 - **Data-Driven and Parametrized Tests**: Prefer fewer, parametrized or
   data-driven tests (e.g., using arrays of test cases) over many single-assertion
   functions or repetitive helper function calls. This reduces file size and
@@ -152,6 +160,15 @@
   behavior/issue, implement the fix, and then verify again with tests and linting.
 - **No Force Push**: Never force push to a remote branch unless the user explicitly
   confirms it is safe (e.g., in a personal feature branch).
+- **Pre-Push Review**: Before pushing a branch or creating a PR, run
+  `/pre-push-review-pro` (or `/pre-push-review-precision`) and resolve all
+  `blocker`/`should-fix` findings. Before writing new code, check
+  `~/.config/opencode/review-checklist.md`.
+- **Learn from Reviews**: Log every reviewer comment in
+  `~/.config/opencode/review-learnings.md` and promote recurring classes to
+  linters or rules, as described in `/address-review`.
+- **Scratch Files**: Write temporary scripts only under `/tmp/opencode`, never
+  into repository working trees.
 
 # context-mode — MANDATORY routing rules
 
