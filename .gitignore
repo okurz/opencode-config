@@ -1,6 +1,27 @@
 node_modules
 package.json
+package-lock.json
 bun.lock
-suse_ollama_url
-.opencode_web_password
 context-mode/
+.ruff_cache/
+opencode-notifier-state.json
+*.bak
+scripts/
+
+commands/plan-thorough-gemini-pro.md
+commands/review_branch_gemini_pro.md
+commands/review-branch-gemini-pro.md
+
+# Secrets, URLs, credentials
+.opencode_web_password
+suse_ollama_url
+suse_osd_llm_url
+prometheus_llm_url
+*_token
+*.token
+*_url
+*.url
+
+# Local logs
+review-learnings.md
+
