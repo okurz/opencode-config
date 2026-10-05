@@ -17,7 +17,7 @@ as a question. Merge or remove items instead of growing the list.
 
 ## Correctness
 
-- Does the change modify public API parameters? If yes, ensure backward compatibility is maintained by making new parameters optional and requesting them only for disambiguation when ambiguity is detected. (qem-dashboard#3423)
+- Does the change modify public API parameters, request payloads, or response schemas? If yes, ensure backward compatibility is maintained (e.g. optional fields with disambiguation on conflict, accepting both scalar IDs and objects) to avoid forcing synchronized deployments. (qem-dashboard#3423)
 - Are regexes anchored? `/https?|ftp/` also matches `httpx`, `xftp`. (openQA#7849)
 - Is anything overwritten/deleted unconditionally that might be valid existing state? (openQA#7849)
 - When work runs concurrently or repeatedly (thread pools, re-download/re-delete loops), can it race on shared state: file/cache targets or module-level in-memory objects such as YAML/XML parsers and clients? (openQA#7849, qem-bot#704)
