@@ -8,6 +8,9 @@
 - Never run git clean or any command that deletes unversioned files. Ask for
   confirmation.
 - Never run any command using sudo.
+- Before any `git commit`, `--amend`, rebase, or conflict resolution, load the
+  `git-workflow` skill with the `skill` tool and follow it (commit format, atomic
+  commits, verification before commit). Do not commit from memory.
 
 ## Agent Guidelines
 
