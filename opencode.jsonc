@@ -148,7 +148,8 @@
         "chunkTimeout": 12000000
       },
       "models": {
-          "qwen-next": { "name": "qwen-next" }
+          "qwen-next": { "name": "qwen-next", "think": false },
+          "qwen-next-thinking": { "name": "qwen-next-thinking" }
       }
     },
     "google": {
