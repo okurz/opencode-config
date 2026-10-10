@@ -187,5 +187,25 @@
           //"Authorization": "Bearer {file:~/.config/opencode_secrets/homeassistant_token}"
       //}
     //}
+  },
+  "agent": {
+    "haiku-builder": {
+      "description": "Rapid builder for CLI frameworks, API endpoints, and bulk test translation.",
+      "mode": "subagent",
+      "model": "google-vertex/claude-haiku-5-5@default",
+      "prompt": "{file:./prompts/builder.txt}"
+    },
+    "strata-builder": {
+      "description": "Rapid builder for CLI frameworks, API endpoints, and bulk test translation.",
+      "mode": "subagent",
+      "model": "strata_okpc4/qwen-next",
+      "prompt": "{file:./prompts/builder.txt}"
+    },
+    "flash-builder": {
+      "description": "Rapid builder for CLI frameworks, API endpoints, and bulk test translation.",
+      "mode": "subagent",
+      "model": "google/gemini-3-flash-preview",
+      "prompt": "{file:./prompts/builder.txt}"
+    }
   }
 }
