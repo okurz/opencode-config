@@ -155,6 +155,19 @@
           "qwen-next-thinking": { "name": "qwen-next-thinking" }
       }
     },
+    "gateway_prometheus": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "gateway (prometheus)",
+      "options": {
+        "baseURL": "http://REDACTED-HOST:8080/v1",
+        "apiKey": "{file:~/.config/opencode_secrets/gateway_prometheus_key}",
+        "timeout": 12000000,
+        "chunkTimeout": 12000000
+      },
+      "models": {
+        "swift-1.5-iq2_xs": { "name": "swift-1.5-iq2_xs", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } }
+      }
+    },
     "google": {
         "options": {
             "projectId": "{file:~/.suse_gemini_cloud_project_id}"
