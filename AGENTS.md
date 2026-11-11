@@ -11,6 +11,14 @@
 
 ## Agent Guidelines
 
+- **Continuous Learning:** When a significant optimization, recurrent issue,
+  or workflow improvement is identified during a session, proactively suggest
+  using the `/learn` command to permanently incorporate this knowledge into
+  project-specific or global opencode configurations.
+- **Context Management:** For context-heavy operations like code reviews
+  (analysing large diffs) or thorough planning (deep codebase research),
+  prefer using sub-agents via the `Task` tool to keep the main session context
+  clean and focused.
 - **Planning:** When asked for a plan, only create `.md` plan documents in
   `local/tasks/`. Do not change any other files during this phase.
 - **Verification:** Every code change must be accompanied by corresponding
