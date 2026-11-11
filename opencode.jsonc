@@ -146,6 +146,7 @@
       "name": "gateway (internal-lab)",
       "options": {
         "baseURL": "{file:~/.config/opencode_secrets/gateway_internal-lab_url}",
+        "apiKey": "{file:~/.config/opencode_secrets/gateway_internal-lab_key}",
         "timeout": 12000000,
         "chunkTimeout": 12000000
       },
