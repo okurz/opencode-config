@@ -14,4 +14,7 @@ description: Use when committing verified work, amending, squashing, rebasing, r
 ## Rebase & conflict resolution
 
 - **Staged Changes in Rebase**: During `git rebase`, `Changes to be committed:` in `git status` are the *local commit's* changes being replayed, NOT the existing state of `origin/master` (`HEAD`).
+- **Conflict Sides in Rebase**: `<<<<<<< HEAD` is the upstream target (rebased-onto state); the block after `=======` is the commit being replayed. Resolve so the replayed commit's intent survives, merging upstream's refactors of the same region (shared anchors, `extends`, `variables`) into it; take upstream alone only when it supersedes the change. Never leave conflict markers in the resolution.
+- **Rerere Is Not Trusted Automatically**: `git rerere status`/`git rerere diff` listing a file is not a resolution; only `git status` reporting "all conflicts fixed: run git rebase --continue" is. Review the recorded resolution before continuing — stale entries exist. `git add` re-records the manual resolution; prune the cache with `git rerere gc`.
+- **Syntax-Check Before `--continue`**: Run the repo's own check for the conflicted file type (`make check`/`lint`, gitlint; GitLab CI YAML needs a loader that registers the `!reference` tag) so a structurally merged resolution is verified as parseable.
 - **Verify Upstream Before `--skip`**: Never run `git rebase --skip` without verifying via `git show origin/master:<path>` or `git log` that the identical change is already in the upstream target branch.
