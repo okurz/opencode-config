@@ -9,3 +9,5 @@ description: Use when fetching and analyzing openQA job logs (autoinst-log.txt) 
 - **Fetch & Filter (context-mode safe)**: Do not use `webfetch` or bare `curl` in `bash`. Fetch and filter in sandbox via `ctx_execute` (e.g. save to `/tmp/opencode/autoinst-log.txt` with `curl -sL` inside `ctx_execute(language: "shell")` or `ctx_execute_file`), printing only matching sections.
 - **Root Cause Analysis**: Search for `[error]`, `[fatal]`, `fail`, `die`, or `timed out`, inspect surrounding lines, and trace back to the failing test module, command, or earlier setup warnings.
 - **TAP Modules**: `The module has been failed by: "X" step` is the only detail in `autoinst-log.txt`; the assertion diff (`not ok N`, `Structures begin differing`, upstream `version:` note) is in the uploaded `<module>-results.tap`.
+
+- **LLM Investigation of a Job**: Load the `openqa-llm-investigate` skill; its read-only flags, endpoints, verdict rules, evaluation procedure and code anchors live there.
