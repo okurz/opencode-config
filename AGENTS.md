@@ -11,8 +11,8 @@
 
 ## Agent Guidelines
 
-- **Skill Loading**: Proactively load the relevant language-specific (e.g.,
-  `perl-dev`, `python-dev`) skills using the `skill` tool at the beginning of
+- **Skill Loading**: Proactively load the relevant language-specific or domain-specific (e.g.,
+  `perl-dev`, `python-dev`, `openqa`) skills using the `skill` tool at the beginning of
   a task.
 - **Rule Discovery**: At the start of a project, always search for
   project-specific conventions (e.g., `AGENTS.md`, `CONTRIBUTING.md`, `xt/`
