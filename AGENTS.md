@@ -97,6 +97,11 @@
 - If work is based on a ticket, reference the ticket in the commit message at
   the bottom in a separate line in the format `Related issue: <ticket_URL>`
 
+### Rebase & Conflict Resolution Discipline
+
+- **Do Not Misinterpret Staged Changes during Rebase**: During `git rebase`, any files listed under `Changes to be committed:` as `typechange`, `modified`, or `new file` in the output of `git status` represent the changes introduced by the *local branch's commit* currently being applied. Do NOT misinterpret these as representing the existing state of `origin/master` (HEAD).
+- **Double-Check Upstream State Before Skipping**: Before skipping any conflicting commit or branch with `git rebase --skip`, you MUST explicitly inspect the file status and history on the upstream target branch (e.g. `origin/master` or `origin/main`) using commands like `git show origin/master:<path>` or `git log`. Never assume a change is redundant or already merged without verifying that the identical change actually exists on the upstream target.
+
 ### Plan Execution
 
 - When a plan document exists in `tasks/`, read it fully before starting. Do
