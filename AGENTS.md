@@ -14,7 +14,9 @@
 - **Tone and Style**: Use a concise, pragmatic, and direct engineering tone. Avoid superlatives, adverbs like 'completely' or 'incredibly', and marketing-speak. Keep communication low-affect.
 - **Skill Loading**: Proactively load the relevant language-specific or domain-specific (e.g.,
   `perl-dev`, `python-dev`, `openqa`, `leap-sync`) skills using the `skill` tool at the beginning of
-  a task.
+  a task. Also load situational skills on demand: `git-workflow` (commit/rebase/conflicts),
+  `code-review` (PR/review feedback), `testing` (write/fix/run tests, coverage, lint-before-verify),
+  `rpm-packaging` (spec files, build deps, abi3 link errors).
 - **Rule Discovery**: At the start of a project, always search for
   project-specific conventions (e.g., `AGENTS.md`, `CONTRIBUTING.md`, `xt/`
   tests, `Makefile` targets like `check` or `lint`) and incorporate them into
@@ -70,105 +72,12 @@
 - Prioritize technical depth and flexibility ("Power over Simplicity") over
   the easiest or shortest script.
 
-### Packaging & Dependency Discipline
-
-- **Investigate Unresolvables**: When a package build fails due to missing or unresolvable dependencies, DO NOT blindly update the dependency. First, investigate if the requirement in the spec file can be lowered to match the currently available version in the distribution.
-- **Check Upstream Requirements**: Extract the upstream requirement configuration (e.g. `pyproject.toml`, `setup.py`, or `Cargo.toml`) from the source archive to verify the true minimum required version.
-- **Lower Requirements if Safe**: If upstream's requirement is lower than what the spec file demands, modify the spec file (often inside distribution-specific blocks like `%else` for older releases) to match the available version.
-- **Handle Linking Errors**: If a package with native extensions (e.g., Rust/Maturin) fails during linking with `unable to find library -lpython3.x`, it likely means the `abi3` feature is disabled or missing. Ensure `BuildRequires: %{use_python}-devel` is present so the linker can find `libpython`.
-
-### Test Discipline
-
-- **Execute Tests After Fixing**: When asked to fix a failing test, you MUST
-  run the test command to verify the fix is effective. Do not assume the fix
-  works without execution — always confirm the test passes.
-- **Targeted Coverage Verification**: When a project requires strict statement coverage, do NOT rely on CI (like Codecov) to find missing coverage, as the feedback loop is too slow. Instead, run coverage locally, but strictly limit the execution to the specific test files associated with your changes to save time (e.g., target specific `.t` or `test_*.py` files). Check the local coverage report specifically for the lines you added/modified before committing.
-- **Proactive Linting**: Always run identified linting, style, and
-  type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`, `tools/tidy`)
-  _before_ attempting verification of functional logic and _before_ claiming
-  completion. Adhere to project style from the first implementation turn.
-- **Integration Realism**: For features affecting the execution flow or
-  integration points, prioritize using or adapting existing "full stack" tests
-  or reusing existing failing/softfailing modules to ensure the real-world
-  execution path is exercised.
-- **Clean Test Output**: Tests must not produce extraneous output. Verify that the
-  test runner output is "clean" (e.g., only "ok" or progress indicators).
-- Before creating new test files, use a search agent to check for redundant
-  coverage in existing test files. Only add tests that provide unique
-  coverage.
-- **Self-Explanatory Test Descriptions (NO in-file comments in tests)**:
-  NEVER add in-file comments to explain test steps, assertions, setup, or numbered
-  sections (e.g. `# 1. Direct JSON`, `# Assert fields`, `# Test error case`). Instead,
-  bake all context, intent, inputs, and expected outcomes directly into the test
-  description strings passed to test functions or subtests. In data-driven tests,
-  include a `desc` property in each case. The test runner output must be fully
-  self-documenting on its own without needing in-file comments.
-- **Data-Driven and Parametrized Tests**: Prefer fewer, parametrized or
-  data-driven tests (e.g., using arrays of test cases) over many single-assertion
-  functions or repetitive helper function calls. This reduces file size and
-  maintenance burden. Bake the logic, context, and expectations directly into
-  self-explanatory test description strings rather than relying on in-file
-  code comments, ensuring the test runner output is fully self-documenting.
-
-### Commit Discipline
-
-- **Atomic Commits**: Each commit MUST focus on a single conceptual change or task. Do not mix unrelated changes, such as bug fixes, logging improvements, and new features, into a single commit. If multiple unrelated changes are needed, implement and commit them sequentially.
-- Do not commit until all verification steps (lint, typecheck, tests) have
-  passed. Fix issues first, then commit once — avoid commit-then-amend cycles.
-- CRITICAL: Do not just read the top of the test output. You MUST verify the
-  command exit code is 0 and read the final 20 lines of the output for strict
-  threshold failures (like coverage drops) that might occur even if all
-  individual tests pass.
-- When a commit may need near-term follow-up changes (e.g. test consolidation,
-  style fixes), ask the user whether to commit now or wait until changes are
-  fully polished.
-- Never run git clean or any command that deletes unversioned files. Ask for
-  confirmation.
-- ALL fix and feat commits MUST include a multi-line commit message. The body
-  MUST contain the headings: Motivation, Design Choices, and Benefits. Be concise: write only 1-2 short sentences under each heading.
-- Commit message format: 50/80 rule. You MUST explicitly insert physical newlines to hard-wrap the body text at 80 characters.
-- To execute multi-line commits reliably without temporary files or interactive editors, ALWAYS use a bash heredoc via standard input: `git commit -F - <<EOF`.
-- After creating or amending a commit, run any project-specific commit linters (e.g. `make test-gitlint`). If the linter fails, use `git commit --amend -F - <<EOF` to fix the message.
-- If work is based on a ticket, reference the ticket in the commit message at
-  the bottom in a separate line in the format `Related issue: <ticket_URL>`
-
-- **Accuracy over History**: Commit messages must strictly describe the final diff. Do not describe hypothetical prior states, avoided mistakes, or local drafts as if they were removed in the current commit.
-- **Terminology**: Avoid referring to the target repository as "upstream" in commit messages intended for that repository.
-
-### Rebase & Conflict Resolution Discipline
-
-- **Do Not Misinterpret Staged Changes during Rebase**: During `git rebase`, any files listed under `Changes to be committed:` as `typechange`, `modified`, or `new file` in the output of `git status` represent the changes introduced by the _local branch's commit_ currently being applied. Do NOT misinterpret these as representing the existing state of `origin/master` (HEAD).
-- **Double-Check Upstream State Before Skipping**: Before skipping any conflicting commit or branch with `git rebase --skip`, you MUST explicitly inspect the file status and history on the upstream target branch (e.g. `origin/master` or `origin/main`) using commands like `git show origin/master:<path>` or `git log`. Never assume a change is redundant or already merged without verifying that the identical change actually exists on the upstream target.
-
 ### Plan Execution
 
 - When a plan document exists in `tasks/`, read it fully before starting. Do
   not re-derive the plan from scratch.
 - When the user says they amended a plan, re-read the file to identify what
   changed rather than guessing.
-
-### Review Management
-
-- **Evaluate Feedback First**: Do not blindly implement reviewer suggestions. First, review the original commit messages and design choices to understand the context. Evaluate whether the comment makes sense and aligns with the codebase. You MUST always formulate an implementation plan and present it to the user for approval BEFORE executing any code changes or commits, regardless of how straightforward the comment seems.
-- **Fetch Feedback**: Use the `gh` tool to fetch review comments from GitHub PRs.
-- **Direct Comment Targeting**: If a URL with `#discussion_r(\d+)` is provided, parse the ID and use `gh api repos/:owner/:repo/pulls/comments/:id` to fetch only that specific feedback and its context.
-- **Structured Address**: Use the `todowrite` tool to explicitly list all
-  reviewer suggestions as a checklist to ensure 100% coverage of feedback.
-- **Fixup Commits**: For PRs already in review, default to using `git commit --fixup <commit_hash>`
-  to address feedback, unless a full rebase or new commit is explicitly requested.
-- **Verify-Implement-Verify**: For each suggestion, first verify the current
-  behavior/issue, implement the fix, and then verify again with tests and linting.
-- **No Force Push**: Never force push to a remote branch unless the user explicitly
-  confirms it is safe (e.g., in a personal feature branch).
-- **Pre-Push Review**: Before pushing a branch or creating a PR, run
-  `/pre-push-review-pro` (or `/pre-push-review-precision`) and resolve all
-  `blocker`/`should-fix` findings. Before writing new code, check
-  `~/.config/opencode/review-checklist.md`.
-- **Learn from Reviews**: Log every reviewer comment in
-  `~/.config/opencode/review-learnings.md` and promote recurring classes to
-  linters or rules, as described in `/address-review`.
-- **Scratch Files**: Write temporary scripts only under `/tmp/opencode`, never
-  into repository working trees.
 
 # context-mode — MANDATORY routing rules
 
