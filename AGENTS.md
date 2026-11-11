@@ -67,8 +67,12 @@
 - Before creating new test files, use a search agent to check for redundant
   coverage in existing test files. Only add tests that provide unique
   coverage.
-- Prefer fewer, parametrized tests over many single-assertion functions. This
-  reduces file size and maintenance burden.
+- **Data-Driven and Parametrized Tests**: Prefer fewer, parametrized or
+  data-driven tests (e.g., using arrays of test cases) over many single-assertion
+  functions or repetitive helper function calls. This reduces file size and
+  maintenance burden. Bake the logic, context, and expectations directly into
+  self-explanatory test description strings rather than relying on in-file
+  code comments, ensuring the test runner output is fully self-documenting.
 
 ### Commit Discipline
 
@@ -99,11 +103,11 @@
 
 ### Review Management
 
+- **Evaluate Feedback First**: Do not blindly implement reviewer suggestions. First, evaluate whether the comment makes sense and aligns with the codebase. If the comment is questionable, unclear, or you disagree with it, pause and discuss it with the user before starting implementation.
 - **Fetch Feedback**: Use the `gh` tool to fetch review comments from GitHub PRs.
 - **Direct Comment Targeting**: If a URL with `#discussion_r(\d+)` is provided, parse the ID and use `gh api repos/:owner/:repo/pulls/comments/:id` to fetch only that specific feedback and its context.
-- **Structured Address**: Create a plan in `tasks/` that explicitly lists all
-  reviewer suggestions as a checklist (or use `todowrite`) to ensure 100%
-  coverage of feedback.
+- **Structured Address**: Use the `todowrite` tool to explicitly list all
+  reviewer suggestions as a checklist to ensure 100% coverage of feedback.
 - **Fixup Commits**: For PRs already in review, default to using `git commit --fixup <commit_hash>`
   to address feedback, unless a full rebase or new commit is explicitly requested.
 - **Verify-Implement-Verify**: For each suggestion, first verify the current
