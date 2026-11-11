@@ -23,7 +23,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Could an unconditional overwrite/delete clobber valid state (e.g. re-sync/download replacing a populated target with an empty/absent source)?
 - Under concurrency or repeated runs (thread pools, re-download/delete loops), can shared state race (files, caches, module-level YAML/XML parsers or clients)? Does skip-if-exists wrongly skip re-syncable dirs/repos, or does a cache key include a per-invocation ID (PR/request ID) that prevents hits?
 - When output is captured, exceptions caught, or input dropped on parse/regex mismatch (`catch`, `return ()`, `next`, `continue`), does a log/stderr line identify the bad input instead of dropping silently?
-- Are SQL subqueries and CTEs constrained to avoid full-table scans (e.g. correlated `EXISTS` instead of unconstrained `IN`)?
+- Are SQL subqueries, CTEs, and `count()`/aggregate queries on filtered resultsets bounded by an index (`grep` `add_index`/`CREATE INDEX` for the filter columns, check the deployed schema), and are multiple counts merged into one aggregate with `count(*) FILTER (WHERE …)` instead of separate `count()` calls (correlated `EXISTS` over unconstrained `IN`)?
 - Does a setting read in a shared base class leak into subclasses targeting a different host (e.g. hypervisor `sshVirtsh` inheriting SUT `sshXtermVt`)?
 
 ## Security
