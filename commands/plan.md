@@ -2,12 +2,6 @@
 description: Create a plan in the tasks/ directory without triggering any remove or add Git actions
 ---
 
-Create a detailed execution plan for the following request: $ARGUMENTS
+Create a detailed execution plan for: $ARGUMENTS
 
-SAVE this plan as a markdown file in the 'tasks/' directory.
-
-STRICT RULES:
-1. Break down the request into atomic, independent tasks that can be implemented and committed separately.
-2. Do NOT stage (git add) the new file.
-3. Do NOT commit the file.
-4. Only perform safe file operations, only read-only 'git' operations.
+Write the plan to `tasks/` (or `local/tasks/`) broken into atomic, independently committable tasks following the `AGENTS.md` naming and non-staging rules. Perform only read-only `git` operations and modify no other files.

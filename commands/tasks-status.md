@@ -3,32 +3,12 @@ description: Read-only audit of plan state in tasks/ cross-checked against git b
 agent: plan
 ---
 
-Audit the state of all plans without changing any file. Work in the tasks dir (`tasks/`, fall back to `local/tasks/`) of the current project.
+Read-only audit of plans in `tasks/` (or `local/tasks/`) using the `AGENTS.md` layout semantics (root = active; `wip/`, `review/`, `completed/` = report filename/counts only; `todo.md` = backlog). Context: $ARGUMENTS
 
-DIRECTORY SEMANTICS (authoritative, do not re-derive):
-
-- `tasks/` root = ACTIVE plans: work not finished yet, these are the only plans to evaluate in depth.
-- `tasks/wip/` = work in progress: implementation started, follow-up branches may be unmerged.
-- `tasks/review/` = implementation done, awaiting user review before `completed/`.
-- `tasks/completed/` = finished and archived; never audit their content, only count them.
-- `tasks/todo.md` = backlog; numbers absent from plan files mean done and archived.
-- Naming: `NNN_<ticket>_<description>.md` maps to branches `feature/NNN_*`.
-
-PROTOCOL:
-
-1. List plans per location; note empty or 0-byte plan files.
-2. Evaluate steps 3-4 ONLY for plans in the `tasks/` root (active ones). For `wip/`, `review/`, `completed/` just report location and filename.
-3. For each active plan, derive the 3-digit task number and ticket id from the filename (`NNN_<ticket>_<description>.md`).
-4. Extract progress signals from the active plan body: checkbox counts (`[x]` vs `[ ]`), and any "Progress"/"Results"/"Status"/"DONE"/"WIP" sections.
-5. Cross-check active plans with git (read-only only: `git branch -a`, `git log`, `git ls-files`, `git merge-base --is-ancestor`):
-   - Match branches by the `feature/NNN_` task prefix (the 3-digit number immediately after `feature/`), NOT by substring. Ticket ids embed the number and cause false positives (e.g. `poo203217` contains `032`, `poo207879` contains `078`). Slug-token matches are secondary and must be marked as approximate.
-   - Classify each branch as MERGED into HEAD or UNMERGED via `git merge-base --is-ancestor`.
-   - For acceptance criteria named in the plan (files to create/remove/migrate), check presence in `git ls-files` / current tree.
-6. Output one table row per active plan: task+ticket | last mtime | plan-internal status | branch state (merged/unmerged, branch head commit) | verdict; then one summary line per archived location (count only).
-7. Flag inconsistencies for active plans explicitly: verifiably done but not in `completed/`; duplicate task-number prefixes; empty plan files; unmerged follow-up refactor branches for an otherwise-done task.
-8. End with a short list of suggested file moves (source -> target) but DO NOT move or edit anything; ask the user before any change. Note that duplicate-prefix collisions auto-resolve when one member of a pair moves out of the root; true content duplicates cannot be merged without deleting a file, which the `tasks/` rule forbids, so flag them for manual handling.
-9. When the user approves the moves, run the `tasks-apply` command to execute them safely.
-
-STRICT RULES: no file writes, no git state changes, no remote operations. Only read-only inspection.
-
-User Context: $ARGUMENTS
+1. List plans per location (flag 0-byte/empty files); evaluate steps 2–3 ONLY for active plans in `tasks/` root.
+2. Parse `NNN_<ticket>_<description>.md` and extract progress signals (`[x]` vs `[ ]`, Progress/Results/Status/DONE/WIP sections).
+3. Cross-check active plans against read-only git state (`git branch -a`, `git log`, `git ls-files`, `git merge-base --is-ancestor`):
+   - Match branches by exact `feature/NNN_` prefix (NOT substring, as ticket IDs like `poo203217` embed numbers; mark slug-token matches as approximate).
+   - Check whether each branch is MERGED into `HEAD` and whether plan acceptance artifacts exist in `git ls-files`.
+4. Output a table of active plans (`task+ticket | mtime | plan status | branch state + head | verdict`), one count line per subdir, and flag inconsistencies (done in root, duplicate `NNN` prefixes, empty files, unmerged follow-up branches).
+5. Propose `source -> target` moves (noting prefix collisions that auto-resolve vs. content duplicates requiring manual merge due to the no-delete rule). Do NOT move/edit anything; run `/tasks-apply` only after user approval.
