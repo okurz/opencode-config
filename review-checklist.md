@@ -7,7 +7,7 @@ as a question. Merge or remove items instead of growing the list.
 ## Reuse and consistency
 
 - Does the codebase already solve this (helper, query pattern like `WITH RECURSIVE`, module)? `grep` before accepting new code. (openQA#7871)
-- Is new prose/docs formatted like surrounding text (line wrapping, heading style)? (openQA#7849)
+- Is new prose, documentation, and UI text formatted like surrounding content (e.g. line wrapping, sentence-case headings and card titles like 'Host summary', 'Worker host administration')? (openQA#7849, openQA#7857)
 
 ## Simplicity
 
@@ -17,9 +17,11 @@ as a question. Merge or remove items instead of growing the list.
 
 ## Correctness
 
+- Does the change modify public API parameters? If yes, ensure backward compatibility is maintained by making new parameters optional and requesting them only for disambiguation when ambiguity is detected. (qem-dashboard#3423)
 - Are regexes anchored? `/https?|ftp/` also matches `httpx`, `xftp`. (openQA#7849)
 - Is anything overwritten/deleted unconditionally that might be valid existing state? (openQA#7849)
-- What happens when the same operation runs twice concurrently or repeatedly (re-download, re-delete loops)? (openQA#7849)
+- When work runs concurrently or repeatedly (thread pools, re-download/re-delete loops), can it race on shared state: file/cache targets or module-level in-memory objects such as YAML/XML parsers and clients? (openQA#7849, qem-bot#704)
+- Are SQL subqueries and CTEs properly constrained to prevent full-table scans (e.g. using correlated `EXISTS` instead of unconstrained `IN`)? (openQA#7871)
 
 ## Security
 
@@ -27,8 +29,12 @@ as a question. Merge or remove items instead of growing the list.
 
 ## External tools and dependencies
 
-- Does the change invoke a new external program? Is it declared in packaging (e.g. `dependencies.yaml`, spec `Requires`/`Recommends`)? (openQA#7849)
-- Are long options used for external commands (`--mirror`, not `-m`)? (openQA#7849)
+- Does the change add, remove, or modify a dependency or external program? If adding, is it declared in packaging (e.g. `dependencies.yaml`, spec `Requires`/`Recommends`)? If removing/downgrading, did you check that no other files still require it? (openQA#7849, os-autoinst-scripts#723)
+- Are long options used for external/documented commands (e.g. `--debug` and `--mirror` instead of `-d` or `-m`)? (openQA#7849)
+
+## Quality and Standards
+
+- Have all local linting, static analysis (e.g. perlcritic, tidy, eslint), and author/unit tests been run and verified to pass? (os-autoinst#3113)
 
 ## Scope
 
