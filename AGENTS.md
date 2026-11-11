@@ -4,6 +4,10 @@
 
 - `tasks/` or `local/tasks/`: Read/write for planning. NEVER run git add, git
   commit, git rm, `rm` or any deletion on this directory.
+- `tasks/` layout: root = active plans; `wip/` = implementation started;
+  `review/` = done, awaiting review; `completed/` = archived; `todo.md` =
+  backlog. Move finished plans to `completed/` with plain `mv` (never `git mv`
+  or `git rm`).
 - AGENTS.md: Do not version control (unless already under version control).
 - Never run git clean or any command that deletes unversioned files. Ask for
   confirmation.
