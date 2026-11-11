@@ -55,9 +55,9 @@
   works without execution — always confirm the test passes.
 - **Targeted Coverage Verification**: When a project requires strict statement coverage, do NOT rely on CI (like Codecov) to find missing coverage, as the feedback loop is too slow. Instead, run coverage locally, but strictly limit the execution to the specific test files associated with your changes to save time (e.g., target specific `.t` or `test_*.py` files). Check the local coverage report specifically for the lines you added/modified before committing.
 - **Proactive Linting**: Always run identified linting, style, and
-  type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`) *before*
-  attempting verification of functional logic and *before* claiming completion.
-  Adhere to project style from the first implementation turn.
+  type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`, `tools/tidy`)
+  *before* attempting verification of functional logic and *before* claiming
+  completion. Adhere to project style from the first implementation turn.
 - **Integration Realism**: For features affecting the execution flow or
   integration points, prioritize using or adapting existing "full stack" tests
   or reusing existing failing/softfailing modules to ensure the real-world
