@@ -38,7 +38,10 @@
   and implementations unless the project specifically mandates another
   language (like Perl).
 - The user prefers concise and brief code: use fewer blank lines, remove
-  redundant comments, maintain a concise format
+  redundant comments, maintain a concise format. Prioritize self-explanatory
+  code (e.g., descriptive variable/function names, clear structure) over
+  in-file comments. Comments should only be used to explain the *why* of
+  complex logic, not the *what* of the code.
 - Prioritize a functional style over Object-Oriented, and Object-Oriented over
   Procedural. Focus on long-term, sustainable maintainability. Use Python's
   list comprehensions, `map`, `filter`, and functional tools (e.g. from
@@ -51,6 +54,10 @@
 - **Execute Tests After Fixing:** When asked to fix a failing test, you MUST
   run the test command to verify the fix is effective. Do not assume the fix
   works without execution — always confirm the test passes.
+- **Proactive Linting:** Always run identified linting, style, and
+  type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`) *before*
+  attempting verification of functional logic and *before* claiming completion.
+  Adhere to project style from the first implementation turn.
 - **Coverage Verification:** When explicitly asked to fix missing coverage,
   you MUST run the project's coverage tools (e.g., `make ... COVERAGE=1`,
   `cover -report ...`) and read the generated report to explicitly verify that
@@ -58,6 +65,10 @@
   and assume coverage increased. If the coverage generation or reporting tool
   fails, you MUST troubleshoot and resolve the tool error rather than skipping
   the verification step.
+- **Integration Realism:** For features affecting the execution flow or
+  integration points, prioritize using or adapting existing "full stack" tests
+  or reusing existing failing/softfailing modules to ensure the real-world
+  execution path is exercised.
 - **Clean Test Output:** Tests must not produce extraneous output (e.g.,
   uncaptured log messages, warnings, or debug prints). Unexpected output is a
   sign of incomplete test isolation or missing assertions. Verify that the
@@ -84,7 +95,22 @@
   confirmation.
 - ALL fix and feat commits MUST include a multi-line commit message. The body
   MUST contain the headings: Motivation, Design Choices, and Benefits.
-- Commit message format: 50/80 rule, 80-char limit, wrap in single quotes.
+- Commit message format: 50/80 rule. You MUST explicitly insert physical newlines to hard-wrap the body text at 80 characters.
+- To execute multi-line commits reliably without temporary files, ALWAYS use a bash heredoc. Example:
+  git commit -F - <<'EOF'
+  <50-char title>
+
+  Motivation:
+  <80-char wrapped text>
+
+  Design Choices:
+  - <80-char wrapped text>
+
+  Benefits:
+  - <80-char wrapped text>
+
+  Related issue: <ticket_URL>
+  EOF
 - If work is based on a ticket, reference the ticket in the commit message at
   the bottom in a separate line in the format `Related issue: <ticket_URL>`
 
