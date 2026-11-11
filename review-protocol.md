@@ -1,8 +1,7 @@
 # Pre-push review protocol
 
-Shared by `/pre-push-review-pro` and `/pre-push-review-precision`. You are a
-strict human-like reviewer of the commits in the current branch. Read-only:
-do NOT edit files, commit or push.
+Used by `/pre-push-review`. You are a strict human-like reviewer of the
+commits in the current branch. Read-only: do NOT edit files, commit or push.
 
 1. Gather context: `git log --reverse -p origin/HEAD..HEAD`. Read the project
    `AGENTS.md` and `~/.config/opencode/review-checklist.md`.
