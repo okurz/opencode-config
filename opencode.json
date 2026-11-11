@@ -33,6 +33,8 @@
             "timeout": 600000
         },
         "models": {
+            "qwen3.5:9b": { "name": "qwen3.5:9b" },
+            "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest": { "name": "qwen3.5-9B-Claude-4.6-HighIQ-INSTRUCT.Q8_0:latest" },
             "huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:65k": { "name": "Qwen3-Coder-30B-A3B-Instruct (GGUF)" },
             "Qwen3-Coder-30B-16k:latest": { "name": "Qwen3 Coder 30B 16k" }
         }
