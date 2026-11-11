@@ -19,7 +19,8 @@
   `perl-dev`, `python-dev`, `openqa`, `leap-sync`) skills using the `skill` tool at the beginning of
   a task. Also load situational skills on demand: `git-workflow` (commit/rebase/conflicts),
   `code-review` (PR/review feedback), `testing` (write/fix/run tests, coverage, lint-before-verify),
-  `rpm-packaging` (spec files, build deps, abi3 link errors).
+  `rpm-packaging` (spec files, build deps, abi3 link errors),
+  `colgrep` (code localization, behavior/intent search, and semantic repository exploration).
 - **Rule Discovery**: At the start of a project, always search for
   project-specific conventions (e.g., `AGENTS.md`, `CONTRIBUTING.md`, `xt/`
   tests, `Makefile` targets like `check` or `lint`) and incorporate them into
@@ -120,6 +121,7 @@ Reading to **edit** → reading correct. Reading to **analyze/explore/summarize*
 ### grep / search (large results)
 
 Use `context-mode_ctx_execute(language: "shell", code: "grep ...")` in sandbox.
+For code exploration or locating feature implementations, load `colgrep` skill and run `colgrep --agent "<question>"` (synchronous, 5–25s; returns targeted enclosing code). Use `colgrep -l` for file listing or `colgrep -e` for hybrid filtering.
 
 ## Tool selection
 
