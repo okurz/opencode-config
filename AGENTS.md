@@ -25,6 +25,7 @@
 
 ## context-mode routing rules
 
+
 <context_window_protection>
 - **Think in Code**: Filter/count/parse/analyze data in sandbox via `ctx_execute(language, code)` or `ctx_execute_file(path, language, code)` and print only summaries. Use native `Read`/`Edit`/`Write` for file edits.
 - **Blocked in Shell**: Never run `curl`/`wget`, inline HTTP, or `webfetch`; use `ctx_fetch_and_index` + `ctx_search` or `ctx_execute`.
