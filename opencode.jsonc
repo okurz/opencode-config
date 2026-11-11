@@ -152,7 +152,7 @@
         }
     },
     "google-vertex": {
-      "name": "Gemini (SUSE - Vertex)",
+      "name": "SUSE - Vertex",
       "options": {
         "project": "{file:~/.vertex_project_id}",
         "location": "global",
