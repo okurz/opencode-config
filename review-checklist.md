@@ -10,7 +10,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 
 ## Simplicity
 
-- For each `eval`, `//`, `defined`, `ref` check, guard `return`, predicate inlined/copied from another context (e.g. a UI display condition reused in a data-selection loop), or test environment override: `grep` callers, config defaults (e.g. `Setup.pm`, module constants) and upstream query `WHERE` filters (e.g. `_previous_scenario_jobs` restricts to `state=done` + `COMPLETE_RESULTS`)—if a clause is already guaranteed, drop it, and avoid arbitrary non-zero delays (`0.01`) when `0` is supported.
+- For each `eval`, `//`, `defined`, `ref` check, guard `return`, predicate inlined/copied from another context (e.g. a UI display condition reused in a data-selection loop), or test environment override: `grep` callers, config defaults (e.g. `Setup.pm`, module constants), ORM schema column inflation/defaults, and upstream query `WHERE` filters (e.g. `_previous_scenario_jobs` restricts to `state=done` + `COMPLETE_RESULTS`)—if a clause is already guaranteed, drop it; when data is missing in a consumer, fix the upstream producer/loader (schemas, key names like `scminfo` vs `scm_info`) instead of adding a defensive fallback or dynamic fetch; and avoid arbitrary non-zero delays (`0.01`) when `0` is supported.
 - Is anything created only to be deleted/ignored in some branches (dirs, temp files)? Create it only where needed.
 - Can similar conditions/regexes be merged, a predicate duplicating an existing result method (`is_ok`, `is_final`) replaced by that method, or manual steps replaced by a library method (e.g. `Mojo::File->move_to`, `path()->slurp`/`spew`)?
 - Do tests cover precedence between an explicit argument and a config fallback (arg wins; fallback used when arg absent)?
@@ -39,7 +39,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 ## Quality and Standards
 
 - Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`) and the repository's own checker (e.g. `./check_links.py` in the suse/wiki docs repo), and unit/author tests pass?
-- Does the commit Motivation state a guarantee not already provided by existing code (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers), and do variable/option names match the code?
+- Does the commit Motivation state a guarantee not already provided by existing code (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers), do variable/option names match the code, and can a reader without the author's context parse every term (call a method a method, not a "predicate" or "template helper", unless that term is established in the codebase)?
 - Is any new user-facing config variable documented in `doc/*.md` (e.g. `doc/backend_vars.md`)?
 - Is user-requested output (dry-run previews, results) visible at default CLI verbosity (not hidden at `INFO` when default is `WARNING`)?
 - Are variable/parameter/target names accurate, non-colliding with existing project terms (`repo_type` vs `obs_repo_type`), consistent across siblings (`label_a`/`label_b`), and protocol-specific for global settings (`SUT_SSH_PORT` not `SUT_PORT`)?
