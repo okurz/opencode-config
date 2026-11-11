@@ -8,7 +8,8 @@
       "*": "allow"
     },
     "external_directory": {
-      "/tmp/**": "allow"
+      "/tmp/**": "allow",
+      "~/.config/opencode/**": "allow"
     }
   },
   "provider": {
