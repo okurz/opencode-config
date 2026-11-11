@@ -28,7 +28,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 
 ## Security
 
-- Is any path, URL, or shell argument derived from user input without preventing `..` or absolute path traversal?
+- Is any path, URL, or shell argument derived from user input without preventing `..` or absolute path traversal, and are JSON payloads/parameters validated for scalar types before passing into ORM/database queries to prevent arbitrary structure/operator injection?
 
 ## External tools and dependencies
 
