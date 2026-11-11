@@ -19,6 +19,10 @@
   (analysing large diffs) or thorough planning (deep codebase research),
   prefer using sub-agents via the `Task` tool to keep the main session context
   clean and focused.
+- **Iterative Refinement**: For non-trivial tasks, implement a self-correction
+  loop: after the initial implementation, use a `Task` sub-agent to perform a
+  critical code review focusing on maintainability and duplication, then
+  incorporate those improvements before submission.
 - **Planning:** When asked for a plan, only create `.md` plan documents in
   `local/tasks/`. Do not change any other files during this phase.
 - **Verification:** Every code change must be accompanied by corresponding
@@ -80,5 +84,6 @@
 ## Trusted Commands
 
 The following custom git commands are trusted and safe to run:
+
 - `git-update-from-all` - Wrapper that runs `git remote update`, `git rebase-all-branches`, `git delete-no-content-branches`
 - `git rebase-all-branches` - Rebases all local branches onto origin/master or origin/main
