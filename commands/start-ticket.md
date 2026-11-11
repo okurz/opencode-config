@@ -2,10 +2,10 @@
 description: Start a new ticket by fetching info, planning, branching, and executing
 ---
 
-Start a new task based on the Redmine ticket: $ARGUMENTS
+Start a new task based on the Redmine ticket ID or URL: $ARGUMENTS
 
 STRICT RULES:
-1. Run `fetch-redmine $ARGUMENTS` to retrieve ticket information from Redmine.
+1. Run `redmine-fetcher $ARGUMENTS` directly to fetch ticket data - the command is on $PATH.
 2. Based on the retrieved information, create a detailed execution plan.
 3. Determine the next free task number by taking the maximum of (a) the
    3-digit prefixes of all local git branches, (b) the 3-digit prefixes of
