@@ -28,6 +28,16 @@
         "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M": { "name": "Qwen3.6-35B-A3B-GGUF" }
       }
     },
+    "llama_cpp_prometheus": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama.cpp (prometheus)",
+      "options": {
+        "baseURL": "{file:prometheus_llm_url}/v1"
+      },
+      "models": {
+        "unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL": { "name": "gemma-4-26B-A4B-qat" }
+      }
+    },
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "SUSE Ollama",
