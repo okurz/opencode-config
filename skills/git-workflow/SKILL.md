@@ -7,7 +7,7 @@ description: Use when committing verified work, amending, squashing, rebasing, r
 
 ## Commit discipline
 
-- **Atomic & Verified**: One conceptual change per commit; commit unrelated changes sequentially. Pass all lint, typecheck, and test checks before committing (avoid commit-then-amend cycles). Verify exit code 0 AND inspect the final 20 lines of test output for coverage/threshold failures. If near-term polish is likely, ask whether to commit now or wait.
+- **Atomic & Verified**: One conceptual change per commit; commit unrelated changes sequentially; split a diff that spans several modules by concept, never by line count. Pass all lint, typecheck, and test checks before committing (avoid commit-then-amend cycles). Verify exit code 0 AND inspect the final 20 lines of test output for coverage/threshold failures. If near-term polish is likely, ask whether to commit now or wait.
 - **Message Format**: Hard-wrap body at 50/80 columns with physical newlines and commit via `git commit -F - <<'EOF'`. For `fix` and `feat` commits, include `Motivation`, `Design Choices`, and `Benefits` headings (1–2 short sentences each). Append `Related issue: <ticket_URL>` on its own final line when applicable.
 - **Accuracy & Linting**: Describe only the final diff (never local drafts or avoided mistakes) and do not call the target repo "upstream". Run project commit linters (e.g. `make test-gitlint`) after committing/amending and fix failures via `git commit --amend -F - <<'EOF'`.
 
