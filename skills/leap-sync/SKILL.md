@@ -1,3 +1,8 @@
+---
+name: leap-sync
+description: Use when syncing openSUSE Leap packages from the Factory branch, resolving unresolvable OBS build dependencies, or opening leap-X.Y branch PRs.
+---
+
 # Skill: leap-sync
 
 ## Purpose
