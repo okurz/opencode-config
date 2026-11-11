@@ -159,7 +159,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "gateway (prometheus)",
       "options": {
-        "baseURL": "http://REDACTED-HOST:8080/v1",
+        "baseURL": "{file:~/.config/opencode_secrets/gateway_prometheus_url}",
         "apiKey": "{file:~/.config/opencode_secrets/gateway_prometheus_key}",
         "timeout": 12000000,
         "chunkTimeout": 12000000
@@ -170,10 +170,10 @@
     },
     "gateway_router": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "gateway gateway (x)",
+      "name": "gateway (router)",
       "options": {
-        "baseURL": "http://REDACTED-HOST:4000/v1",
-        "apiKey": "{file:~/.litellm_REDACTED-HOST_api_key}",
+        "baseURL": "{file:~/.config/opencode_secrets/gateway_router_url}",
+        "apiKey": "{file:~/.config/opencode_secrets/gateway_router_key}",
         "headers": { "x-litellm-session-id": "opencode-desktop" },
         "timeout": 12000000,
         "chunkTimeout": 12000000
