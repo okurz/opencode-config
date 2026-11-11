@@ -29,3 +29,7 @@
 - **Search**: For feature localization or repository exploration, load `colgrep` skill (`colgrep --agent "<question>"`, `-l`, `-e`); for large raw grep, use `ctx_execute`.
 - **Memory & Commands**: On resume/compact, query `ctx_search(sort: "timeline")` (e.g. `source: "decision"` or `"constraint"`) before asking the user. Use `ctx_index` to store reference docs. Write artifacts to files (return path + 1-line summary). Map `ctx stats|doctor|upgrade|purge` to their MCP tools (`purge` requires `confirm: true`).
 </context_window_protection>
+
+## Vendored skills (opencode + pi, shared via `~/.agents/skills`)
+
+- **Vendored Skills**: curated copies of `mattpocock/skills` + `addyosmani/agent-skills` live in `~/.agents/skills` (whitelist `~/.agents/vendor-whitelist.txt`, refresh `~/.agents/sync-vendor-skills.sh`); upstream clones stay in `~/.local/share/agent-skills`. Load on demand via the `skill` tool or `/skill:<name>`; never edit vendored copies, edit the whitelist instead.
