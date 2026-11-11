@@ -21,7 +21,7 @@
 - **Planning & Execution**: When asked for a plan, create only `tasks/<NNN>_<ticket_id>_<snake_case_desc>.md` (or `local/tasks/`), breaking work into atomic, independently committable tasks without modifying other files (`NNN` = max 3-digit prefix across local branches, `tasks/` files, and `tasks/todo.md` + 1, default `001`). Read existing `tasks/` plans fully before starting and re-read after user edits.
 - **Session Handoff**: Start execution in a fresh session from the plan's `## Session starter`; the plan file is the interface between sessions. A plan carries `## Approvals` (decision, approver, date), `## Gates` (verification command per commit), and `## Session starter`, and `git status` is read before acting. Use `/handoff` only when no plan file carries the decisions. Approval counts only when the plan records it: never infer it from a previous conversation.
 - **Verification**: Every code change must include corresponding test updates or new tests.
-- **Code & Comment Style**: Keep code, PRs, issue replies, and reviews brief with minimal blank lines and zero duplication. Prefer self-explanatory names/structure; comment only the *why* of complex logic, never *what*. In tests, NEVER write in-file comments—always use self-explanatory test description strings.
+- **Code & Comment Style**: Keep code, PRs, issue replies, and reviews brief with minimal blank lines and zero duplication. Prefer self-explanatory names/structure; comment only the _why_ of complex logic, never _what_. In tests, NEVER write in-file comments—always use self-explanatory test description strings.
 
 ## context-mode routing rules
 
