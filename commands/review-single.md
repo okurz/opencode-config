@@ -14,7 +14,10 @@ Pretend to be a code reviewer of the last commit. Provide a critical review focu
     -   **Programming Style**: Prioritize a functional style over Object-Oriented, and Object-Oriented over Procedural. Focus on long-term, sustainable maintainability. Use Python's list comprehensions, `map`, `filter`, and functional tools (e.g. from `itertools`, `functools`) over procedural for-loops. Use mapping tables over if/else trees. Use ternary operator over verbose if/else.
     -   **Maintainability**: Prioritize zero duplication and high maintainability for humans.
     -   **Consistency**: Inconsistencies with the rest of the codebase.
-3.  **Feedback**: Provide a detailed, critical report of your findings. Be firm and thorough in your assessment.
+3.  **Feedback**: Provide a detailed, critical report of your findings. For every identified issue, you MUST provide an **Actionable Suggestion Block** optimized for cheaper, faster LLMs (like GPT-4o-mini or Gemini Flash) to apply directly. Each suggestion MUST include:
+    - **Target File**: Exact file path.
+    - **Reasoning**: A concise description of the issue and why the change is needed.
+    - **Actionable SEARCH/REPLACE Block**: An exact search-and-replace block using standard markers (`<<<<<<< SEARCH`, `=======`, `>>>>>>> REPLACE`) containing precise code context, so another model can execute the edit without any complex planning or external search.
 
 STRICT RULES:
 - ONLY perform read-only operations. Do not modify the codebase.
