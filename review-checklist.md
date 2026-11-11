@@ -38,7 +38,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 
 ## Quality and Standards
 
-- Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`), and unit/author tests pass?
+- Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`) and the repository's own checker (e.g. `./check_links.py` in the suse/wiki docs repo), and unit/author tests pass?
 - Does the commit Motivation state a guarantee not already provided by existing code (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers), and do variable/option names match the code?
 - Is any new user-facing config variable documented in `doc/*.md` (e.g. `doc/backend_vars.md`)?
 - Is user-requested output (dry-run previews, results) visible at default CLI verbosity (not hidden at `INFO` when default is `WARNING`)?
