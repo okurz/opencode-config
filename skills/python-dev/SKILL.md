@@ -1,21 +1,10 @@
 ---
 name: python-dev
-description: Specialized instructions for Python development and testing.
+description: Use when writing, refactoring, or testing Python code.
 ---
 
 # Python Development Guidelines
 
-## Tools & Frameworks
-- Prefer `pytest` for all new test developments.
-- Use `unittest.mock` or `pytest-mock` to isolate dependencies. Avoid manual mock implementations.
-- Favor `pydantic` or `dataclasses` over raw dictionaries for structured data.
-
-## Coding Style
-- Mandate type hints (PEP 484) consistently to improve code clarity and LLM-assisted development.
-- Prioritize a functional style: use list comprehensions, `map`, `filter`, and functional tools (e.g. from `itertools`, `functools`) over procedural for-loops.
-- Use mapping tables over if/else trees.
-- Use ternary operator over verbose if/else.
-
-## Testing Discipline
-- Ensure clean test output: no uncaptured log messages, warnings, or debug prints.
-- Verify coverage when requested using project-specific tools.
+- **Tools & Types**: Use `pytest`, `unittest.mock`/`pytest-mock` (no manual mock classes), `pydantic`/`dataclasses` over raw dicts, and consistent PEP 484 type hints.
+- **Style**: Prefer comprehensions, `map`/`filter`, `itertools`/`functools`, dispatch dicts over `if/else` chains, and ternary expressions over verbose `if/else`.
+- **Testing**: Keep test output free of uncaptured logs, warnings, or debug prints; verify coverage with project tools when requested.
