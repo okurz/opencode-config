@@ -32,7 +32,7 @@
 - **Shell vs. Sandbox**: Use `bash` only for short/stateful commands (`git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, package installs). For >20 lines output or multi-command gathering, use `ctx_batch_execute(commands, queries)` (concurrency 4–8 for I/O, cap 4 for `gh`, 1 for CPU/shared state) or `ctx_execute`.
 - **Search**: For feature localization or repository exploration, load `colgrep` skill (`colgrep --agent "<question>"`, `-l`, `-e`); for large raw grep, use `ctx_execute`.
 - **Memory & Commands**: On resume/compact, query `ctx_search(sort: "timeline")` (e.g. `source: "decision"` or `"constraint"`) before asking the user. Use `ctx_index` to store reference docs. Write artifacts to files (return path + 1-line summary). Map `ctx stats|doctor|upgrade|purge` to their MCP tools (`purge` requires `confirm: true`).
-</context_window_protection>
+  </context_window_protection>
 
 ## Vendored skills (opencode + pi, shared via `~/.agents/skills`)
 
