@@ -5,7 +5,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 ## Reuse and consistency
 
 - Does the codebase already solve this (helper, query pattern like `WITH RECURSIVE`, module)? `grep` before accepting new code.
-- Are repetitive command flags, options, or expressions consolidated into a property or helper rather than duplicated across call sites?
+- Are repetitive expressions, method calls, or hash lookups cached in a local variable, and repeated command flags/options consolidated into a property or helper?
 - Is new prose, documentation, and UI text formatted like surrounding content (line wrapping; sentence case for headings, cards, badges, labels, tooltips, and buttons, e.g. 'Host summary', 'Warning' not 'WARNING')?
 
 ## Simplicity
