@@ -5,14 +5,14 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 ## Reuse and consistency
 
 - Does the codebase already solve this (helper, query pattern like `WITH RECURSIVE`, module)? `grep` before accepting new code.
-- Are repetitive expressions, method calls, or hash lookups cached in a local variable, and repeated command flags/options consolidated into a property or helper?
-- Is new prose, documentation, and UI text formatted like surrounding content (line wrapping; sentence case for headings, cards, badges, labels, tooltips, and buttons, e.g. 'Host summary', 'Warning' not 'WARNING')?
+- Are repetitive expressions, method calls, or hash lookups cached in a local variable, repeated command flags/options consolidated into a property or helper, and repeated URLs/values across CI steps factored into workflow/job `env`?
+- Is new prose, documentation, and UI text formatted like surrounding content (line wrapping; sentence case for headings, cards, badges, labels, tooltips, buttons and dropdown options, including every word inside parentheses, e.g. 'Host summary', 'Dark mode (Halloween season)' not 'Dark mode (Halloween Season)', 'Warning' not 'WARNING')?
 
 ## Simplicity
 
-- For each `eval`, `//`, `defined`, `ref` check, array-form branch, or guard `return`: `grep` callers and config defaults (e.g. `Setup.pm`)—if production guarantees the value, fix incomplete test setups instead of adding defensive fallbacks.
+- For each `eval`, `//`, `defined`, `ref` check, guard `return`, predicate inlined/copied from another context (e.g. a UI display condition reused in a data-selection loop), or test environment override: `grep` callers, config defaults (e.g. `Setup.pm`, module constants) and upstream query `WHERE` filters (e.g. `_previous_scenario_jobs` restricts to `state=done` + `COMPLETE_RESULTS`)—if a clause is already guaranteed, drop it, and avoid arbitrary non-zero delays (`0.01`) when `0` is supported.
 - Is anything created only to be deleted/ignored in some branches (dirs, temp files)? Create it only where needed.
-- Can similar conditions/regexes be merged, or manual steps replaced by a library method (e.g. `Mojo::File->move_to`, `path()->slurp`/`spew`)?
+- Can similar conditions/regexes be merged, a predicate duplicating an existing result method (`is_ok`, `is_final`) replaced by that method, or manual steps replaced by a library method (e.g. `Mojo::File->move_to`, `path()->slurp`/`spew`)?
 - Do tests cover precedence between an explicit argument and a config fallback (arg wins; fallback used when arg absent)?
 - Do multi-instance/multi-host settings or examples (e.g. global worker settings) support per-instance overrides or interpolation (port, hostname) rather than hardcoded values?
 
