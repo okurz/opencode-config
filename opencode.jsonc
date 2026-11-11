@@ -40,16 +40,16 @@
         "ukisai/Swift-1.5-Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S": { "name": "swift" }
       }
     },
-    "llama_cpp_prometheus": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "llama.cpp (prometheus)",
-      "options": {
-        "baseURL": "{file:~/.config/opencode_secrets/prometheus_llm_url}/v1"
-      },
-      "models": {
-        "unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL": { "name": "gemma-4-26B-A4B-qat" }
-      }
-    },
+    //"llama_cpp_prometheus": {
+      //"npm": "@ai-sdk/openai-compatible",
+      //"name": "llama.cpp (prometheus)",
+      //"options": {
+        //"baseURL": "{file:~/.config/opencode_secrets/prometheus_llm_url}/v1"
+      //},
+      //"models": {
+        //"unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL": { "name": "gemma-4-26B-A4B-qat" }
+      //}
+    //},
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "SUSE Ollama",
