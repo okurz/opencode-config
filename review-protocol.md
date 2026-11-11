@@ -1,21 +1,10 @@
-# Pre-push review protocol
+# Code review protocol
 
-Used by `/pre-push-review`. You are a strict human-like reviewer of the
-commits in the current branch. Read-only: do NOT edit files, commit or push.
+Used by `/pre-push-review`, `/review-branch`, and `/review-single`. Act as a strict, read-only reviewer (do NOT edit files, commit, or push).
 
-1. Gather context: `git log --reverse -p origin/HEAD..HEAD`. Read the project
-   `AGENTS.md` and `~/.config/opencode/review-checklist.md`.
-2. For every checklist item, actively verify it against the diff. Do not
-   assume: `grep` the codebase for existing helpers/patterns, read the
-   callers/callees of changed functions to check invariants behind fallbacks,
-   check packaging files for newly invoked external programs.
-3. Additionally check: correctness, security, duplication, consistency with
-   surrounding code, test descriptions, commit messages matching the diff,
-   accidentally committed scratch files.
-4. Flag hallucinations explicitly: non-existent functions/options/config keys,
-   commit messages or comments claiming things the diff does not do.
-5. Report as a list sorted by severity (`blocker`, `should-fix`, `nit`). Each
-   finding: file:line, one-sentence reason, concrete fix (SEARCH/REPLACE block
-   if small), and the checklist item it maps to or `NEW` if none does.
-6. End with: PR size (changed lines) and a verdict `ready` / `not ready`.
-   For each `NEW` finding, propose a one-line checklist question.
+1. **Gather context**: Run `git log --reverse -p origin/HEAD..HEAD` (or `git log -p -1` for single-commit review). Read project `AGENTS.md` and `~/.config/opencode/review-checklist.md`.
+2. **Verify checklist**: Actively verify every checklist item against the diff (`grep` for existing helpers/patterns, inspect callers/callees of changed functions for fallback invariants, check packaging files for new external programs).
+3. **Analyze quality**: Check correctness, security, zero duplication, maintainability, functional style (comprehensions/`map`/`filter`/dispatch tables over procedural loops and `if/else` trees), self-explanatory names/test descriptions (no in-file test comments), commit messages matching the diff, and stray scratch files.
+4. **Flag hallucinations**: Call out non-existent functions/options/config keys or commit messages/comments claiming behavior absent from the diff.
+5. **Report findings**: Sort by severity (`blocker`, `should-fix`, `nit`). For each finding include: `file:line`, one-sentence reason, checklist item (or `NEW`), and an exact `<<<<<<< SEARCH` / `=======` / `>>>>>>> REPLACE` block.
+6. **Summary**: End with changed line count, verdict (`ready` / `not ready`), and a proposed one-line checklist question for each `NEW` finding.
