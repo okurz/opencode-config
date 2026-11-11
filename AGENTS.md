@@ -12,7 +12,7 @@
 ## Agent Guidelines
 
 - **Tone & Radical Candor**: Use a concise, pragmatic, low-affect engineering tone (no flattery, praise, superlatives, or marketing-speak). Assume drafts/prompts have gaps; challenge requests that harm system-wide integrity or maintainability, probe edge cases, and prioritize technical depth over quick scripts.
-- **Skill Loading**: Proactively load matching domain (`perl-dev`, `python-dev`, `openqa`, `openqa-svirt`, `openqa-llm-investigate`, `leap-sync`) and situational (`git-workflow`, `code-review`, `testing`, `rpm-packaging`, `colgrep`) skills from `<available_skills>` via the `skill` tool at task start.
+- **Skill Loading**: Proactively load matching domain (`perl-dev`, `python-dev`, `openqa`, `openqa-svirt`, `openqa-llm-investigate`, `leap-sync`) and situational (`git-workflow`, `code-review`, `testing`, `rpm-packaging`, `colgrep`, `redmine`) skills from `<available_skills>` via the `skill` tool at task start.
 - **Rule Discovery**: At project start, inspect project conventions (`AGENTS.md`, `CONTRIBUTING.md`, `xt/`, `Makefile` targets like `check`/`lint`) and follow them.
 - **Continuous Learning**: Proactively suggest `/learn` when identifying reusable optimizations, recurring issues, or workflow improvements.
 - **Sub-Agents & Self-Review**: Use `Task` sub-agents for context-heavy research or diff reviews (read-only `explore` agent for file/pattern/constraint research); on non-trivial tasks, run a sub-agent review for maintainability and duplication before finishing.
