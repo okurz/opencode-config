@@ -12,7 +12,7 @@
 ## Agent Guidelines
 
 - **Skill Loading**: Proactively load the relevant language-specific or domain-specific (e.g.,
-  `perl-dev`, `python-dev`, `openqa`) skills using the `skill` tool at the beginning of
+  `perl-dev`, `python-dev`, `openqa`, `leap-sync`) skills using the `skill` tool at the beginning of
   a task.
 - **Rule Discovery**: At the start of a project, always search for
   project-specific conventions (e.g., `AGENTS.md`, `CONTRIBUTING.md`, `xt/`
@@ -90,7 +90,8 @@
 - ALL fix and feat commits MUST include a multi-line commit message. The body
   MUST contain the headings: Motivation, Design Choices, and Benefits.
 - Commit message format: 50/80 rule. You MUST explicitly insert physical newlines to hard-wrap the body text at 80 characters.
-- To execute multi-line commits reliably without temporary files, ALWAYS use a bash heredoc.
+- To execute multi-line commits reliably without temporary files or interactive editors, ALWAYS use a bash heredoc via standard input: `git commit -F - <<EOF`.
+- After creating or amending a commit, run any project-specific commit linters (e.g. `make test-gitlint`). If the linter fails, use `git commit --amend -F - <<EOF` to fix the message.
 - If work is based on a ticket, reference the ticket in the commit message at
   the bottom in a separate line in the format `Related issue: <ticket_URL>`
 
