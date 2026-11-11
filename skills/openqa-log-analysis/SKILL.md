@@ -1,5 +1,5 @@
 ---
-name: openqa
+name: openqa-log-analysis
 description: Use when fetching and analyzing openQA job logs (autoinst-log.txt) or diagnosing openQA test failures.
 ---
 
