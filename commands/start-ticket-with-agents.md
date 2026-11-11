@@ -16,7 +16,7 @@ STRICT RULES:
 4. Extract the ticket ID (e.g., `poo12345` for Redmine or `gh717` for GitHub) and a concise, snake_case description (3-4 words) from the ticket.
 5. Formulate the task name: `<number>_<ticket_id>_<description>` (e.g., 062_poo12345_fix_foo).
 6. Create and switch to a new git branch named `feature/<task_name>` (if the branch already exists, switch to it; otherwise create it, e.g., using `git checkout -b` or `git checkout` if it already exists).
-7. SAVE the execution plan derived from the `pro-architect` into `tasks/<task_name>.md`.
+7. SAVE the execution plan derived from the architect sub-agent into `tasks/<task_name>.md`.
 8. **Implementation:** Use the `Task` tool to launch the builder sub-agent to implement the solution and tests as defined in the plan. Wait for it to finish.
 9. **Review & Fix-up:** Use the `Task` tool to launch the fixer sub-agent to review the changes, fix any bugs, ensure strict compliance with linting, and verify maximum test coverage. Wait for it to finish.
 10. Update the plan document in `tasks/<task_name>.md` with the progress and results of each phase. You (the main agent) must coordinate the sub-agents sequentially.
