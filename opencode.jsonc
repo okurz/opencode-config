@@ -168,6 +168,22 @@
         "swift-1.5-iq2_xs": { "name": "swift-1.5-iq2_xs", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } }
       }
     },
+    "gateway_router": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "gateway gateway (x)",
+      "options": {
+        "baseURL": "http://REDACTED-HOST:4000/v1",
+        "apiKey": "{file:~/.litellm_REDACTED-HOST_api_key}",
+        "headers": { "x-litellm-session-id": "opencode-desktop" },
+        "timeout": 12000000,
+        "chunkTimeout": 12000000
+      },
+      "models": {
+        "swift": { "name": "swift", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } },
+        "swift-5080": { "name": "swift-5080", "reasoning": true, "limit": { "context": 262144, "input": 258048, "output": 4096 } },
+        "swift-2060": { "name": "swift-2060", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } }
+      }
+    },
     "google": {
         "options": {
             "projectId": "{file:~/.suse_gemini_cloud_project_id}"
