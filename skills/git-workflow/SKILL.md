@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Use when committing, amending, squashing, rebasing, resolving git merge conflicts, or writing commit messages. Covers atomic commits, commit-message format/heredocs, and rebase/conflict safety.
+description: Use when committing verified work, amending, squashing, rebasing, resolving git merge conflicts, or writing commit messages. Covers atomic commits, commit-message format/heredocs, and rebase/conflict safety.
 ---
 
 # Git workflow

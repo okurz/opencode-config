@@ -5,6 +5,7 @@ description: Start a new ticket by fetching info, planning, branching, and execu
 Start a new task based on the ticket ID or URL: $ARGUMENTS
 
 STRICT RULES:
+
 1. **Ticket Fetching:** Run the correct fetching command based on the provided ticket ID or URL:
    - If `$ARGUMENTS` contains `github.com`, starts with `gh`, or is a GitHub issue ID/number, run `gh issue view $ARGUMENTS` directly to fetch the issue details.
    - Otherwise, run `redmine-fetcher $ARGUMENTS` directly to fetch Redmine ticket data (the command is on $PATH).
@@ -24,5 +25,5 @@ STRICT RULES:
 8. IMMEDIATELY begin executing the plan.
 9. After implementation and successful verification (running tests and
    project-specific checks), COMMIT the changes.
-10. Follow the "Commit Discipline" and "Test Discipline" from AGENTS.md.
+10. Follow the `git-workflow` and `testing` skills.
 11. Do NOT push the branch or commits to the remote repository.

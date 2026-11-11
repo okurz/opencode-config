@@ -20,5 +20,5 @@ STRICT RULES:
 8. **Implementation:** Use the `Task` tool to launch the builder sub-agent to implement the solution and tests as defined in the plan. Wait for it to finish.
 9. **Review & Fix-up:** Use the `Task` tool to launch the fixer sub-agent to review the changes, fix any bugs, ensure strict compliance with linting, and verify maximum test coverage. Wait for it to finish.
 10. Update the plan document in `tasks/<task_name>.md` with the progress and results of each phase. You (the main agent) must coordinate the sub-agents sequentially.
-11. After the sub-agents finish implementation and verification, COMMIT the changes yourself. Follow the "Commit Discipline" and "Test Discipline" from AGENTS.md.
+11. After the sub-agents finish implementation and verification, COMMIT the changes yourself. Follow the `git-workflow` and `testing` skills.
 12. Do NOT push the branch or commits to the remote repository.
