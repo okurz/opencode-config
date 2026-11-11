@@ -53,13 +53,7 @@
 - **Task Atomicity**: When planning, break down complex requests into smaller, independent tasks that can be implemented and committed individually to ensure clear and focused commits.
 - **Verification**: Every code change must be accompanied by corresponding
   test adaptations or new tests to ensure the change is verified.
-- **Commit Completed Work**: Once code changes are implemented and verified
-  (all tests, linting, and style checks pass), commit the changes before
-  declaring work done. Load the `git-workflow` skill with the `skill` tool and
-  follow it (atomic commits, commit-message format/heredocs, verification
-  before commit). Do not wait for an explicit user request to commit verified
-  work; commit the completed work, but never push or create pull requests
-  unless explicitly requested.
+- **Commit Completed Work**: Commit verified changes before declaring work done (load `git-workflow`). Never push or PR unless requested.
 - The user prefers concise and brief code, pull request descriptions, and comments: use fewer blank lines, remove
   redundant comments, and maintain an concise format. Keep all comments, issue replies, PR descriptions, and reviews short and to the point (no long walls of text; reviewers skip them). Prioritize self-explanatory
   code (e.g., descriptive variable/function names, clear structure) over
