@@ -11,11 +11,18 @@
 
 ## Agent Guidelines
 
-- **Continuous Learning:** When a significant optimization, recurrent issue,
+- **Skill Loading**: Proactively load the relevant language-specific (e.g.,
+  `perl-dev`, `python-dev`) skills using the `skill` tool at the beginning of
+  a task.
+- **Rule Discovery**: At the start of a project, always search for
+  project-specific conventions (e.g., `AGENTS.md`, `CONTRIBUTING.md`, `xt/`
+  tests, `Makefile` targets like `check` or `lint`) and incorporate them into
+  your workflow.
+- **Continuous Learning**: When a significant optimization, recurrent issue,
   or workflow improvement is identified during a session, proactively suggest
   using the `/learn` command to permanently incorporate this knowledge into
   project-specific or global opencode configurations.
-- **Context Management:** For context-heavy operations like code reviews
+- **Context Management**: For context-heavy operations like code reviews
   (analysing large diffs) or thorough planning (deep codebase research),
   prefer using sub-agents via the `Task` tool to keep the main session context
   clean and focused.
@@ -23,7 +30,7 @@
   loop: after the initial implementation, use a `Task` sub-agent to perform a
   critical code review focusing on maintainability and duplication, then
   incorporate those improvements before submission.
-- **Planning:** When asked for a plan, only create `.md` plan documents in
+- **Planning**: When asked for a plan, only create `.md` plan documents in
   `tasks/` (or `local/tasks/` if exists). Use the naming convention
   `<3-digit-number>_<ticket_id>_<description>.md` for new tasks, where
   description is in snake_case. Determine the next free task number by taking
@@ -32,46 +39,29 @@
   in `tasks/todo.md`. Increment this maximum by one (e.g., if the highest is
   061, use 062). If no numbers are found, start with 001. Do not change any
   other files during this phase.
-- **Verification:** Every code change must be accompanied by corresponding
+- **Verification**: Every code change must be accompanied by corresponding
   test adaptations or new tests to ensure the change is verified.
-- The user prefers Python for all new developments. Use Python scripts, tools,
-  and implementations unless the project specifically mandates another
-  language (like Perl).
 - The user prefers concise and brief code: use fewer blank lines, remove
   redundant comments, maintain a concise format. Prioritize self-explanatory
   code (e.g., descriptive variable/function names, clear structure) over
   in-file comments. Comments should only be used to explain the *why* of
   complex logic, not the *what* of the code.
-- Prioritize a functional style over Object-Oriented, and Object-Oriented over
-  Procedural. Focus on long-term, sustainable maintainability. Use Python's
-  list comprehensions, `map`, `filter`, and functional tools (e.g. from
-  `itertools`, `functools`) over procedural for-loops. Use mapping tables over
-  if/else trees. Use ternary operator over verbose if/else.
 - Prioritize zero duplication and high maintainability for humans.
 
 ### Test Discipline
 
-- **Execute Tests After Fixing:** When asked to fix a failing test, you MUST
+- **Execute Tests After Fixing**: When asked to fix a failing test, you MUST
   run the test command to verify the fix is effective. Do not assume the fix
   works without execution — always confirm the test passes.
-- **Proactive Linting:** Always run identified linting, style, and
+- **Proactive Linting**: Always run identified linting, style, and
   type-checking commands (e.g. `perlcritic`, `ruff`, `eslint`) *before*
   attempting verification of functional logic and *before* claiming completion.
   Adhere to project style from the first implementation turn.
-- **Coverage Verification:** When explicitly asked to fix missing coverage,
-  you MUST run the project's coverage tools (e.g., `make ... COVERAGE=1`,
-  `cover -report ...`) and read the generated report to explicitly verify that
-  the previously missing lines are now covered. Do NOT just run the test suite
-  and assume coverage increased. If the coverage generation or reporting tool
-  fails, you MUST troubleshoot and resolve the tool error rather than skipping
-  the verification step.
-- **Integration Realism:** For features affecting the execution flow or
+- **Integration Realism**: For features affecting the execution flow or
   integration points, prioritize using or adapting existing "full stack" tests
   or reusing existing failing/softfailing modules to ensure the real-world
   execution path is exercised.
-- **Clean Test Output:** Tests must not produce extraneous output (e.g.,
-  uncaptured log messages, warnings, or debug prints). Unexpected output is a
-  sign of incomplete test isolation or missing assertions. Verify that the
+- **Clean Test Output**: Tests must not produce extraneous output. Verify that the
   test runner output is "clean" (e.g., only "ok" or progress indicators).
 - Before creating new test files, use a search agent to check for redundant
   coverage in existing test files. Only add tests that provide unique
@@ -86,8 +76,7 @@
 - CRITICAL: Do not just read the top of the test output. You MUST verify the
   command exit code is 0 and read the final 20 lines of the output for strict
   threshold failures (like coverage drops) that might occur even if all
-  individual tests pass. Additionally, ensure that the full test log is clean
-  of unexpected noise like uncaptured log output or warnings.
+  individual tests pass.
 - When a commit may need near-term follow-up changes (e.g. test consolidation,
   style fixes), ask the user whether to commit now or wait until changes are
   fully polished.
@@ -96,21 +85,7 @@
 - ALL fix and feat commits MUST include a multi-line commit message. The body
   MUST contain the headings: Motivation, Design Choices, and Benefits.
 - Commit message format: 50/80 rule. You MUST explicitly insert physical newlines to hard-wrap the body text at 80 characters.
-- To execute multi-line commits reliably without temporary files, ALWAYS use a bash heredoc. Example:
-  git commit -F - <<'EOF'
-  <50-char title>
-
-  Motivation:
-  <80-char wrapped text>
-
-  Design Choices:
-  - <80-char wrapped text>
-
-  Benefits:
-  - <80-char wrapped text>
-
-  Related issue: <ticket_URL>
-  EOF
+- To execute multi-line commits reliably without temporary files, ALWAYS use a bash heredoc.
 - If work is based on a ticket, reference the ticket in the commit message at
   the bottom in a separate line in the format `Related issue: <ticket_URL>`
 
@@ -120,35 +95,3 @@
   not re-derive the plan from scratch.
 - When the user says they amended a plan, re-read the file to identify what
   changed rather than guessing.
-
-### Python
-
-- Prefer `pytest` for all new test developments. Ensure clean output as per
-  the general test discipline.
-- Use `unittest.mock` or `pytest-mock` to isolate dependencies. Avoid manual
-  mock implementations.
-- Mandate type hints (PEP 484) consistently to improve code clarity and
-  LLM-assisted development.
-- Favor `pydantic` or `dataclasses` over raw dictionaries for structured data.
-
-### Perl
-
-- omit parentheses for Test::More commands (e.g., use `is $a, $b, 'msg'`
-  instead of `is($a, $b, 'msg')`).
-- Suppress or capture Mojolicious log output in tests unless the log message
-  itself is being tested. Use `MOJO_LOG_LEVEL=fatal` or mock the logger to
-  keep test output clean.
-- When writing Perl tests, always prefer using Test::MockModule or
-  Test::MockObject for mocking instead of creating custom mock classes or
-  packages.
-
-## Added Memories
-
-## Trusted Commands
-
-The following custom git commands are trusted and safe to run:
-
-- `git-update-from-all` - Wrapper that runs `git remote update`, `git
-  rebase-all-branches`, `git delete-no-content-branches`
-- `git rebase-all-branches` - Rebases all local branches onto origin/master or
-  origin/main
