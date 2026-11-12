@@ -38,6 +38,11 @@ directory (for some tokens):
 - `gateway_<name>_url` and `gateway_<name>_key`: LiteLLM-style gateways
 - `ollama_url`, `lmstudio_<name>_url`: local or LAN model servers
 - `suse_osd_llm_url`, `prometheus_llm_url`: llama.cpp endpoints
+- `amazon-bedrock`: Authenticates via standard AWS profile `bedrock` in
+  `~/.aws/config` without storing keys or credentials in this repository. In
+  `opencode.jsonc`, configured via `@ai-sdk/amazon-bedrock` with
+  `"profile": "bedrock"`. In pi, auth is delegated in `~/.pi/agent/auth.json`
+  via `AWS_PROFILE` and scoped in `~/.pi/agent/settings.json` via `enabledModels`.
 - `homeassistant_url`, `homeassistant_token`, `evcc_url`: optional integrations
 
 Each file holds a single value with no trailing newline. A provider whose
