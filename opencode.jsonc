@@ -206,6 +206,22 @@
         "gemini-4-argon": {},
         "gemini-4-carbon": {}
       }
+    },
+    "amazon-bedrock": {
+      "npm": "@ai-sdk/amazon-bedrock",
+      "name": "Amazon Bedrock",
+      "options": {
+        "region": "eu-central-1",
+        "profile": "bedrock"
+      },
+      "models": {
+        "eu.anthropic.claude-haiku-5-5": { "name": "Claude Haiku 5.5 (EU)" },
+        "global.anthropic.claude-haiku-5-5": { "name": "Claude Haiku 5.5 (Global)" },
+        "eu.anthropic.claude-sonnet-5-5": { "name": "Claude Sonnet 5.5 (EU)" },
+        "global.anthropic.claude-sonnet-5-5": { "name": "Claude Sonnet 5.5 (Global)" },
+        "eu.anthropic.claude-opus-5-5": { "name": "Claude Opus 5.5 (EU)" },
+        "global.anthropic.claude-opus-5-5": { "name": "Claude Opus 5.5 (Global)" }
+      }
     }
   },
   "mcp": {
