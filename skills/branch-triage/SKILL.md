@@ -11,7 +11,8 @@ Systematic read-only evaluation to identify branches ready for a PR, PRs closest
 
 Gather local branch status and upstream PR state without modifying working trees:
 
-1. **Local branch inventory**:
+1. **Local branch inventory & worktree scoping**:
+   - Worktree scoping: check sibling directories (`../<name>`) and branch naming tags (e.g. `oqa$N`). Scope the audit to branches created from or active in this working copy; attribute others to their respective home worktree rather than classifying them as orphan PRs.
    - Distance from upstream: `git rev-list --count origin/<main>..<branch>`
    - Merge base status: `git merge-base --is-ancestor <branch> origin/<main>`
    - Cherry-pick status: `git cherry -v origin/<main> <branch>` to detect commits already picked upstream.
@@ -23,14 +24,17 @@ Gather local branch status and upstream PR state without modifying working trees
 
 3. **Check local tip vs. remote PR head**:
    - Compare `git rev-parse <branch>` with PR `headRefOid`.
+   - When fork remote == PR head != local, compare commit messages (`git log -1 --format=%s`) and timestamps: identical message with newer local commit indicates an unpushed local rebase (propose `git push --force-with-lease`); if PR is newer or message differs, local tip is stale (propose `git reset --hard <fork>/<branch>`).
    - Check if difference is a clean rebase or content drift via patch comparison:
      `git diff origin/<main>...<branch>` vs. `git diff <base>...<headRefOid>`.
 
 ## 2. Check Auto-Merge and CI Gates
 
 Before ranking, inspect repository-specific merge requirements:
+
 - Inspect `.mergify.yml` or branch protection rules (e.g. required approvals count, required check names, minimum check count `#check-success >= N`, forbidden labels like `acceptance-tests-needed` or `not-ready`, bypass labels like `merge-fast`).
-- Tally PR checks (`gh pr checks <num>`): distinguish genuine failures vs. pending queue or transient external checks (e.g. OBS build targets failing purely due to outdated base commit).
+- Tally PR checks (`gh pr checks <num>`): distinguish genuine test/linter failures vs. transient infrastructure glitches or outdated base packaging errors (e.g. OBS build failures caused by an old base commit missing recent spec/packaging fixes) that resolve on clean rebase.
+- Focus on actionable code/test fixes (review feedback to address, test adjustments, packaging rebase) over administrative force-merge bypass labels (e.g. `merge-fast`).
 
 ## 3. Candidate Categorization
 
