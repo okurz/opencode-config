@@ -16,8 +16,12 @@ Review a pull or merge request as the configured review bot (`$ARGUMENTS` can be
    - If `$ARGUMENTS` provides a number or URL, target that PR/MR.
    - If `$ARGUMENTS` is empty, find the highest-priority open candidate in the current repository that is not draft, not authored by the bot/reviewer identity, and still needs review:
      - **GitHub**:
+       Use `gh-pr-triage` (or `gh-as-bot pr list`):
        ```sh
-       gh-as-bot pr list --state open --json number,title,isDraft,reviews --limit 20
+       # Fast unblocking: PRs with >=1 approval, 0 changes requested, passing CI, mergeable
+       gh-pr-triage --ready-to-approve
+       # Or unreviewed queue:
+       gh-pr-triage --unreviewed
        ```
      - **GitLab**:
        ```sh
