@@ -21,7 +21,7 @@
 - **Planning & Execution**: When asked for a plan, create only `tasks/<NNN>_<ticket_id>_<snake_case_desc>.md` (or `local/tasks/`), breaking work into atomic, independently committable tasks without modifying other files (`NNN` = max 3-digit prefix across local branches, `tasks/` files, and `tasks/todo.md` + 1, default `001`). Read existing `tasks/` plans fully before starting and re-read after user edits.
 - **Session Handoff**: Start execution in a fresh session from the plan's `## Session starter`; the plan file is the interface between sessions. A plan carries `## Approvals` (decision, approver, date), `## Gates` (verification command per commit), and `## Session starter`, and `git status` is read before acting. Use `/handoff` only when no plan file carries the decisions. Approval counts only when the plan records it: never infer it from a previous conversation.
 - **Verification**: Every code change must include corresponding test updates or new tests.
-- **Code & Comment Style**: Keep code, PRs, issue replies, and reviews brief with minimal blank lines and zero duplication. Prefer self-explanatory names/structure; comment only the _why_ of complex logic, never _what_. In tests, NEVER write in-file comments—always use self-explanatory test description strings.
+- **Code & Comment Style**: Keep code, PRs, issue replies, and reviews brief with minimal blank lines and zero duplication. Prefer self-explanatory names/structure; comment only the _why_ of complex logic, never _what_. In tests, NEVER write in-file comments—always use self-explanatory test description strings. Commit and PR text states only what the diff and CI do not already show: no claim the implementation, a test, or a tool guarantees by definition, no section that restates the diff.
 
 ## context-mode routing rules
 
@@ -36,4 +36,4 @@
 
 ## Vendored skills (opencode + pi, shared via `~/.agents/skills`)
 
-- **Vendored Skills**: curated copies of `mattpocock/skills` + `addyosmani/agent-skills` live in `~/.agents/skills` (whitelist `~/.agents/vendor-whitelist.txt`, refresh `~/.agents/sync-vendor-skills.sh`); upstream clones stay in `~/.local/share/agent-skills`. Load on demand via the `skill` tool or `/skill:<name>`; never edit vendored copies, edit the whitelist instead.
+- **Vendored Skills**: curated copies of `mattpocock/skills` + `addyosmani/agent-skills` live in `~/.agents/skills` (whitelist `~/.agents/vendor-whitelist.txt`, refresh `~/.agents/sync-vendor-skills.sh`); upstream clones stay in `~/.local/share/agent-skills`. Load on demand via the `skill` tool or `/skill:<name>`; never edit vendored copies, edit the whitelist instead. A vendored template (e.g. `pr`'s Summary/Evidence/Merge Danger) is a menu, not a repo convention: the repo's own PR layout (repo `AGENTS.md`, PR template, `openqa` skill) wins and sections it does not require are left out.
