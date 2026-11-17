@@ -13,6 +13,24 @@
     }
   },
   "provider": {
+    "helmcode": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Helmcode",
+      "options": {
+        "baseURL": "{file:~/.config/opencode_secrets/helmcode_url}",
+        "apiKey": "{file:~/.config/opencode_secrets/helmcode_suse_api_key}",
+        "timeout": 12000000,
+        "chunkTimeout": 12000000
+      },
+      "models": {
+        "deepseek-v4-flash": {
+          "name": "DeepSeek V4.1 Flash (1017)",
+          "reasoning": true,
+          "limit": { "context": 1000000, "input": 967232, "output": 32768 },
+          "modalities": { "input": ["text"], "output": ["text"] }
+        }
+      }
+    },
     "llama.cpp_local": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "llama.cpp (local)",
