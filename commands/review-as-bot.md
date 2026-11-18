@@ -18,7 +18,9 @@ number, URL, or empty) followed by optional flags.
 
 1. **Host & Tool Detection**:
    Detect hosting forge from the target URL or from `git remote get-url origin`:
-   - **GitHub**: use `gh-as-bot` (wraps `gh` with credentials from `~/.config/review-assistant/write*.env`).
+   - **GitHub**: every GitHub call in this workflow must go through `gh-as-bot` (wraps `gh` with
+     credentials from `~/.config/review-assistant/write*.env`). A bare `gh` call uses the human
+     account and mis-attributes the review.
      Verify bot identity: `gh-as-bot api user --jq .login`.
    - **GitLab**: use `glab-as-bot` (wraps `glab` with credentials from `~/.config/review-assistant/<host-slug>.env`).
      Load the `gitlab-review` skill.
@@ -66,7 +68,10 @@ number, URL, or empty) followed by optional flags.
      - **GitHub**:
        ```sh
        gh-as-bot pr review <PR> --<verdict> --body "<comment>"
+       gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews --jq '.[-1] | .user.login + " " + .state + " " + .html_url'
        ```
+       The second command is the post-condition: it must report the bot login, not the human account.
+       Treat any other login as a failed run and say so.
      - **GitLab**:
        Write body to file, then comment and optionally approve:
        ```sh
