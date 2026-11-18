@@ -52,6 +52,9 @@ number, URL, or empty) followed by optional flags.
    - Inspect check runs / CI pipelines:
      - GitHub: `gh-as-bot pr checks <PR>`.
      - GitLab: pipeline status from `glab-as-bot api "projects/<owner>%2F<repo>/merge_requests/<MR>"`.
+   - Quote review facts verbatim, never from memory: approvals, requested reviewers, check counts and
+     reviewer logins come from
+     `gh-as-bot pr view <PR> --json reviews,reviewDecision,statusCheckRollup`.
    - Load domain/testing skills matching the project (e.g. `openqa`, `perl-dev`, `python-dev`, `testing`, `code-review`), and read `~/.config/opencode/review-checklist.md`.
 
 4. **Assess Quality**:
