@@ -275,6 +275,11 @@
       "mode": "subagent",
       "model": "google/gemini-3-flash-preview",
       "prompt": "{file:./prompts/builder.txt}"
+    },
+    "deepseek-reviewer": {
+      "description": "Read-only strict code reviewer on DeepSeek V4.1 Flash (Helmcode) for pre-push and branch reviews.",
+      "mode": "subagent",
+      "model": "helmcode/deepseek-v4-flash"
     }
   }
 }

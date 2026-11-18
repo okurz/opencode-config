@@ -61,6 +61,8 @@ grep -oE '\{file:[^}]+\}' opencode.jsonc | sort -u
 - Builder agents (`haiku-builder`, `flash-builder`, `gateway-builder`) share
   `prompts/builder.txt` and differ only in model.
 - `explore` is a read-only research agent. It has no edit or write tools.
+- `deepseek-reviewer` (Helmcode `deepseek-v4-flash`) is a read-only reviewer
+  for `/pre-push-review reviewer=deepseek-reviewer`.
 - `pro-architect` and `precision-fixer` are the planning and fixing roles
   used by the multi-agent command variants.
 
