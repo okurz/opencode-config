@@ -51,7 +51,15 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Are variable/parameter/target names and UI labels/table headers accurate, non-colliding with existing project terms (`repo_type` vs `obs_repo_type`; `Roles`/`role` not `Permissions` for openQA access levels), matching underlying form control names/IDs, consistent across siblings (`label_a`/`label_b`), and protocol-specific for global settings (`SUT_SSH_PORT` not `SUT_PORT`)?
 - Do build targets (`Makefile`, `CMakeLists.txt`) write only local build artifacts without touching system paths, package managers, or root privileges?
 
-## Scope
+## CI gates and packaging
 
+- Is a failing `OBS: openQA - openSUSE_Tumbleweed/x86_64` or another stale-base build context only behind master, so a rebase clears it, rather than a real failure of the change?
+- Does the PR reach the mergify floor: 2 approvals, `#check-success>=39`, `#check-pending=0`, linear history, no `acceptance-tests-needed`/`not-ready`/`merge-skip-*` label?
+- Did changed Perl lines run `COVERAGE=1 make test-unit-and-integration TESTS=<file>` plus `make check-line-coverage`, and did `make tidy` and `make test-checkstyle` pass on a clean tree?
+- Is a new Python test file executed by a Makefile target or CI job (this repo only runs `ruff`), or would its assertions never run?
+- Do packaging conditionals agree: units in `%files`, the script behind `%if %{with python_scripts}`, and a matching `%exclude` or `%if`, so rpmbuild does not stop on unpackaged files?
+- Is the `poo#` bugref present and consistent with the change, and does the PR body avoid claims the diff and CI already show?
+
+## Scope
 - Is the PR small enough to review in one sitting (< ~300 changed lines), or would a design discussion be cheaper?
 - When adding integration or end-to-end checks to CI, start with a single, fast scenario (e.g. testing directly from git source) rather than waiting on external packaging builds (like OBS) or scheduling full matrices?
