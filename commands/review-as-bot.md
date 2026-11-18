@@ -27,7 +27,8 @@ number, URL, or empty) followed by optional flags.
      Verify bot identity: `glab-as-bot api user | jq -r '.username + " (" + .name + ")"'`.
 
 2. **Select Target PR/MR**:
-   - If the target provides a number or URL, target that PR/MR.
+   - If the target provides a number or URL, target that PR/MR. Refuse a merged or closed target:
+     `gh-as-bot api repos/<owner>/<repo>/pulls/<PR> --jq .state`.
    - If the target is empty, find the highest-priority open candidate in the current repository that is not draft, not authored by the bot/reviewer identity, and still needs review:
      - **GitHub**:
        Use `gh-pr-triage` (or `gh-as-bot pr list`):
