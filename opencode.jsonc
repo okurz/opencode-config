@@ -197,9 +197,9 @@
         "chunkTimeout": 12000000
       },
       "models": {
-        "swift": { "name": "swift", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } },
+        "swift": { "name": "swift", "reasoning": true, "limit": { "context": 196608, "input": 192512, "output": 4096 } },
         "swift-5080": { "name": "swift-5080", "reasoning": true, "limit": { "context": 262144, "input": 258048, "output": 4096 } },
-        "swift-2060": { "name": "swift-2060", "reasoning": true, "limit": { "context": 131072, "input": 126976, "output": 4096 } }
+        "swift-2060": { "name": "swift-2060", "reasoning": true, "limit": { "context": 196608, "input": 192512, "output": 4096 } }
       }
     },
     "google": {
@@ -221,6 +221,7 @@
         "gemini-3.6-flash": {},
         "gemini-3.7-flash": {},
         "gemini-3.8-flash": {},
+        "gemini-4-hydrogen": {},
         "gemini-4-argon": {},
         "gemini-4-carbon": {}
       }
