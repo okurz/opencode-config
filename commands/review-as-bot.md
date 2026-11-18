@@ -47,6 +47,8 @@ number, URL, or empty) followed by optional flags.
    - Inspect details and diff:
      - GitHub: `gh-as-bot pr view <PR> --json title,body,author,headRefName` and `gh-as-bot pr diff <PR>`.
      - GitLab: `glab-as-bot mr view <MR>` and `glab-as-bot mr diff <MR>`. Check mergeability with `git merge-tree`.
+   - Isolate inspection and any test run in `git worktree add --detach /tmp/review-<PR> <head-sha>`
+     (remove it at the end). Never modify the working tree of the checkout the run starts in.
    - Inspect check runs / CI pipelines:
      - GitHub: `gh-as-bot pr checks <PR>`.
      - GitLab: pipeline status from `glab-as-bot api "projects/<owner>%2F<repo>/merge_requests/<MR>"`.
