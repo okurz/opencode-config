@@ -52,12 +52,34 @@ number, URL, or empty) followed by optional flags.
    - Inspect check runs / CI pipelines:
      - GitHub: `gh-as-bot pr checks <PR>`.
      - GitLab: pipeline status from `glab-as-bot api "projects/<owner>%2F<repo>/merge_requests/<MR>"`.
-   - Load domain/testing skills matching the project (e.g. `openqa`, `perl-dev`, `python-dev`, `testing`, `code-review`).
+   - Load domain/testing skills matching the project (e.g. `openqa`, `perl-dev`, `python-dev`, `testing`, `code-review`), and read `~/.config/opencode/review-checklist.md`.
 
 4. **Assess Quality**:
-   - Verify alignment with project conventions, commit style (Conventional Commits, 50/80 rule), and test coverage requirements.
+   - Verify alignment with project conventions, commit style (Conventional Commits, 50/80 rule), and
+     test coverage requirements.
    - For dependency updates: check for breaking changes, dropped assets, or failing test suites.
-   - Determine verdict: `APPROVE`, `COMMENT`, or `REQUEST_CHANGES`.
+   - Determine the verdict from the findings, not from the PR's overall impression:
+     - Any finding that asks for an edit, however small, is `REQUEST_CHANGES`. An approval carrying
+       `Nit:` items is not usable here: mergify merges on approvals and does not check unresolved
+       threads, so those items get dropped.
+     - A finding blocks only when it is valid: it names a `file:line`, cites the rule or the failure mode
+       it violates (repo `AGENTS.md`, `review-checklist.md`, or a concrete broken behavior), and proposes
+       a concrete edit. Open questions and preferences stay in the body without affecting the verdict.
+       Do not re-raise a point a human already answered or dismissed in a reply on the same commit.
+     - `APPROVE` when there is nothing left to change, `COMMENT` when the PR cannot be judged yet.
+     - Anchor blocking findings as inline comments on the line
+       (`gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews -X POST -f event=REQUEST_CHANGES
+       -f body=... -f 'comments[][path]=<file>' -F 'comments[][line]=<line>' -f 'comments[][body]=...'`),
+       so the author sees them next to the code; keep body-only findings for the summary. When the line is
+       not part of the diff (unchanged line, or the review is submitted after a force-push), keep the
+       finding in the body instead of failing the API call.
+   - Keep the verdict stable per commit, not per sampling run: check the bot's own earlier reviews on this
+     head sha and its still-unresolved threads. If it requested changes on this sha and those threads are
+     unresolved, keep that verdict and only add what the earlier review missed. Approve once the author
+     resolved them, even without a new commit; never let a re-roll of the same unresolved state change
+     the verdict.
+   - Name no model in the review body: the review speaks for the bot, not for a model.
+   - Keep "verified by execution" (command and result) apart from "read only" in the body.
 
 5. **Draft & Submit**:
    - Formulate a concise, pragmatic review summary.
