@@ -280,6 +280,11 @@
       "description": "Read-only strict code reviewer on DeepSeek V4.1 Flash (Helmcode) for pre-push and branch reviews.",
       "mode": "subagent",
       "model": "helmcode/deepseek-v4-flash"
+    },
+    "hydrogen-reviewer": {
+      "description": "Read-only strict code reviewer on Gemini 4 Hydrogen (Google Vertex) for pre-push and branch reviews.",
+      "mode": "subagent",
+      "model": "google-vertex/gemini-4-hydrogen"
     }
   }
 }

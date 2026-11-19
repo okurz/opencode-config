@@ -4,8 +4,11 @@ description: Perform a critical review of the last commit, using a reviewer sub-
 
 Perform a critical review of the last commit (`HEAD`).
 
-Parse and strip optional `reviewer=<agent>` from `$ARGUMENTS` (default `general`; `main` runs in the main session).
+Parse and strip optional `model=<fuzzy>` and `reviewer=<agent>` from `$ARGUMENTS`:
+- If `reviewer=main`, run in the main session.
+- If `model=<fuzzy>` is given: fuzzy-match against configured reviewer subagents or models in `~/.config/opencode/opencode.jsonc` (e.g. `hydrogen` -> `hydrogen-reviewer`, `deepseek` -> `deepseek-reviewer`).
+- Otherwise use `reviewer=<agent>` if specified, defaulting to `general`.
 
-1. Unless `reviewer=main`, launch the reviewer sub-agent via `Task` (do not run `git` or analyze in the main session) with prompt:
+1. Unless `reviewer=main`, launch the resolved reviewer sub-agent via `Task` (do not run `git` or analyze in the main session) with prompt:
    `Read ~/.config/opencode/review-protocol.md and follow it strictly for the last commit only (git log -p -1). Read-only: do not modify files. Context: $ARGUMENTS`
 2. Report the findings directly to the user.
