@@ -14,6 +14,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Is anything created only to be deleted/ignored in some branches (dirs, temp files)? Create it only where needed.
 - Can similar conditions/regexes be merged, a predicate duplicating an existing result method (`is_ok`, `is_final`) replaced by that method, or manual steps replaced by a library method (e.g. `Mojo::File->move_to`, `path()->slurp`/`spew`)?
 - Do tests cover precedence between an explicit argument and a config fallback (arg wins; fallback used when arg absent)?
+- Does a non-obvious parser, format or normalization helper show a worked input→output example in the README or its docstring, so a reader does not have to reconstruct the rule from the code?
 - Do multi-instance/multi-host settings or examples (e.g. global worker settings) support per-instance overrides or interpolation (port, hostname) rather than hardcoded values?
 - Do shared plugin and domain helpers accept plain scalar values or models rather than controller validation objects (`$validation`, `$req`), keeping HTTP request validation at the controller boundary?
 
@@ -42,7 +43,8 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 ## Quality and Standards
 
 - Does each new endpoint, parameter, or filter test assert the returned data (ids, values, rejected inputs with 400/403, combinations with existing filters) instead of only the HTTP status, so that reverting the code fails the test?
-- Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`), the repository's own checker (e.g. `./check_links.py` in the suse/wiki docs repo, `gitlint --commits origin/master..HEAD` for the commit message title regex), and unit/author tests pass?
+- Do new tests drive the real code path (route, template, SQL statement/conflict case) instead of mocking the method under test or hand-copying its logic, is the `Test::MockModule`/mock import dropped when it is no longer needed, and do new test-suite subs use signatures like production code?
+- Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`), the repository's own checker (e.g. `./check_links.py` in the suse/wiki docs repo, `gitlint --commits origin/master..HEAD` for the commit message title regex), and did it run the repo's own target (`make checkstyle`/`make check-ruff`) rather than a bare `ruff check .`, which skips extensionless scripts that the target lints by explicit file list, and unit/author tests pass?
 - Does the PR body say how the change was verified beyond unit tests, with exact commands and links to live runs/PRs/jobs, instead of only claiming it works?
 - Does the commit Motivation or PR body state a guarantee the implementation, a test, or CI already provides (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers; a regenerating script is idempotent by definition and a test checks it anyway), is every performance claim grounded in a named dataset and measurement (`EXPLAIN ANALYZE` on o3, 1.14M jobs, 725 workers) instead of an unverifiable one ("3M synthetic jobs ... about 0.5 s"), do variable/option names match the code, can a reader without the author's context parse every term (call a method a method, not a "predicate" or "template helper", unless that term is established in the codebase), and does the PR body follow the repo's own layout (repo `AGENTS.md`, PR template, `openqa` skill) rather than a vendored generic template, so no `Evidence`/`Merge Danger` section appears that the repo does not ask for?
 - Is any new user-facing config variable documented in `doc/*.md` (e.g. `doc/backend_vars.md`)?
@@ -59,7 +61,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Was every test run started through the repo's own target (`make test-unit-and-integration TESTS=<file>`) instead of bare `prove -l`, so a harness failure is not misreported as "cannot be executed locally"?
 - Is a new Python test file executed by a Makefile target or CI job (this repo only runs `ruff`), or would its assertions never run?
 - Do packaging conditionals agree: units in `%files`, the script behind `%if %{with python_scripts}`, and a matching `%exclude` or `%if`, so rpmbuild does not stop on unpackaged files?
-- Is the `poo#` bugref present and consistent with the change, and does the PR body avoid claims the diff and CI already show?
+- Is the `poo#` bugref present and does the ticket it names actually describe this change (open it and read the subject), and does the PR body avoid claims the diff and CI already show?
 
 ## Scope
 - Is the PR small enough to review in one sitting (< ~300 changed lines), or would a design discussion be cheaper?
