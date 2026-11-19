@@ -51,7 +51,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Are variable/parameter/target names and UI labels/table headers accurate, non-colliding with existing project terms (`repo_type` vs `obs_repo_type`; `Roles`/`role` not `Permissions` for openQA access levels), matching underlying form control names/IDs, consistent across siblings (`label_a`/`label_b`), and protocol-specific for global settings (`SUT_SSH_PORT` not `SUT_PORT`)?
 - Do build targets (`Makefile`, `CMakeLists.txt`) write only local build artifacts without touching system paths, package managers, or root privileges?
 
-## CI gates and packaging
+## openQA: CI gates and packaging
 
 - Is a failing `OBS: openQA - openSUSE_Tumbleweed/x86_64` or another stale-base build context only behind master, so a rebase clears it, rather than a real failure of the change?
 - Does the PR reach the mergify floor: 2 approvals, `#check-success>=39`, `#check-pending=0`, linear history, no `acceptance-tests-needed`/`not-ready`/`merge-skip-*` label?
