@@ -56,6 +56,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Is a failing `OBS: openQA - openSUSE_Tumbleweed/x86_64` or another stale-base build context only behind master, so a rebase clears it, rather than a real failure of the change?
 - Does the PR reach the mergify floor: 2 approvals, `#check-success>=39`, `#check-pending=0`, linear history, no `acceptance-tests-needed`/`not-ready`/`merge-skip-*` label?
 - Did changed Perl lines run `COVERAGE=1 make test-unit-and-integration TESTS=<file>` plus `make check-line-coverage`, and did `make tidy` and `make test-checkstyle` pass on a clean tree?
+- Was every test run started through the repo's own target (`make test-unit-and-integration TESTS=<file>`) instead of bare `prove -l`, so a harness failure is not misreported as "cannot be executed locally"?
 - Is a new Python test file executed by a Makefile target or CI job (this repo only runs `ruff`), or would its assertions never run?
 - Do packaging conditionals agree: units in `%files`, the script behind `%if %{with python_scripts}`, and a matching `%exclude` or `%if`, so rpmbuild does not stop on unpackaged files?
 - Is the `poo#` bugref present and consistent with the change, and does the PR body avoid claims the diff and CI already show?
