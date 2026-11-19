@@ -5,7 +5,7 @@ description: Use when addressing GitHub PR or code-review comments, reviewer fee
 
 # Code review management
 
-- **Evaluate & Get Approval First**: Check original commit messages and design context before accepting reviewer suggestions. Track all items via `todowrite` and ALWAYS present an evaluation + implementation plan for user approval BEFORE editing code or committing.
+- **Evaluate & Get Approval First**: Check original commit messages and design context before accepting reviewer suggestions. Track all items via `todowrite` and ALWAYS present an evaluation + implementation plan for user approval BEFORE editing code or committing. Exception: in a non-interactive `/review-as-bot` run (`pi -p`), skip this approval/todowrite workflow and follow that command's output contract; never ask or plan to post.
 - **Fetch Feedback**: Use `gh` to fetch PR review comments; for `#discussion_r(\d+)` URLs, fetch only `gh api repos/:owner/:repo/pulls/comments/:id`.
 - **Verify-Implement-Verify & Fixup**: Reproduce/verify the issue, apply the fix, re-run tests/lint, and commit with `git commit --fixup <commit_hash>` unless rebase/new commit is requested.
 - **No Force Push**: Never force-push unless the user explicitly confirms it is safe.
@@ -14,4 +14,5 @@ description: Use when addressing GitHub PR or code-review comments, reviewer fee
   - For GitHub repos: use `gh-as-bot` (or pass `GH_TOKEN` loaded from `~/.config/review-assistant/write.env` / `write-classic-public_repo.env`).
   - For GitLab repos: load the `gitlab-review` skill and use `glab-as-bot` (loaded from `~/.config/review-assistant/<host-slug>.env`).
   - Always verify active identity with `<tool>-as-bot api user` before running review actions.
+  - A bot review is read-only unless the command passes `--post`; do not edit, commit, create a todo list, or offer to submit.
 - **Learn & Scratch**: Log comments in `~/.config/opencode/review-learnings.md` (promote recurring classes per `/address-review`). Put temporary files only in `/tmp/opencode`.

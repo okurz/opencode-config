@@ -13,8 +13,12 @@ number, URL, or empty) followed by optional flags.
    - Neither set: interactive session, the step 5 write gate applies.
    - `--dry-run` and `--post` are GitHub-only. On GitLab keep the step 5 gate and the `glab-as-bot`
      flow below unchanged.
-   - In a non-interactive run (`pi -p`) nobody answers: never ask a question, and never end the run
-     without either a submitted review or a printed error plus a non-zero exit.
+   - In a non-interactive run (`pi -p`) nobody answers: never ask a question and never end with an
+     interactive prompt. Finish with a submitted review (`--post`), the dry-run block, the
+     blocked-write block, or a `--- REVIEW FAILED ---` block. The harness owns the exit code.
+   - This command's output contract and verdict rubric override any loaded skill. In `pi -p` the
+     `code-review` skill's approval/todowrite workflow does not apply: do not ask, offer, plan, or
+     request confirmation.
 
 1. **Host & Tool Detection**:
    Detect hosting forge from the target URL or from `git remote get-url origin`:
@@ -48,29 +52,57 @@ number, URL, or empty) followed by optional flags.
    - Inspect details and diff:
      - GitHub: `gh-as-bot pr view <PR> --json title,body,author,headRefName` and `gh-as-bot pr diff <PR>`.
      - GitLab: `glab-as-bot mr view <MR>` and `glab-as-bot mr diff <MR>`. Check mergeability with `git merge-tree`.
-   - Isolate inspection and any test run in `git worktree add --detach /tmp/review-<PR> <head-sha>`
-     (remove it at the end). Never modify the working tree of the checkout the run starts in.
+   - Isolate inspection in `git worktree add --detach <temp-root>/<owner>-<repo>-<PR> <head-sha>`
+     (`<temp-root>` defaults to `/tmp`; remove the worktree before step 5). Keep it in the temp
+     root: when a repo needs a sibling checkout (distri tests need `os-autoinst`), symlink that
+     checkout inside the worktree instead of relocating it. Never modify the working tree of the
+     checkout the run starts in.
+   - Test budget: run at most the targeted test for the changed files, once. Skip the run and record
+     `not verified (environment)` when the repo layout, dependencies, or harness are unavailable.
+     Never run coverage, `make tidy`, or checkstyle unless the PR changes those themselves. Do not
+     retry an environment failure.
+   - Tool budget: after the diff, CI state, review threads, and at most one targeted test, stop
+     investigating and draft. Aim for at most ~12 tool calls; do not chase a helper's full call
+     graph or an unrelated test failure.
    - Inspect check runs / CI pipelines:
      - GitHub: `gh-as-bot pr checks <PR>`.
      - GitLab: pipeline status from `glab-as-bot api "projects/<owner>%2F<repo>/merge_requests/<MR>"`.
    - Quote review facts verbatim, never from memory: approvals, requested reviewers, check counts and
      reviewer logins come from
      `gh-as-bot pr view <PR> --json reviews,reviewDecision,statusCheckRollup`.
-   - Load domain/testing skills matching the project (e.g. `openqa`, `perl-dev`, `python-dev`, `testing`, `code-review`), and read `~/.config/opencode/review-checklist.md`.
+   - Review replies live in the same `repos/<owner>/<repo>/pulls/<PR>/comments` listing; group by
+     `in_reply_to_id`. Never call an `/in_reply_to` endpoint.
+   - Verification runs: use unauthenticated API/`openqa-cli`; never read `~/.config/openqa/client.conf`
+     or other credential files.
+   - Read `~/.config/opencode/review-checklist.md` and load only skills that supply domain facts
+     (`openqa`, `perl-dev`, `python-dev`, `testing`). Do not load `code-review` (it is for addressing
+     feedback, not bot review). If `openqa` is loaded, ignore its PR-review/post playbook
+     (`openqa/SKILL.md` section F).
+   - Record the basis in the draft: `Basis: review-checklist.md; skills: <names or none>`.
 
 4. **Assess Quality**:
    - Verify alignment with project conventions, commit style (Conventional Commits, 50/80 rule), and
      test coverage requirements.
    - For dependency updates: check for breaking changes, dropped assets, or failing test suites.
-   - Determine the verdict from the findings, not from the PR's overall impression:
-     - Any finding that asks for an edit, however small, is `REQUEST_CHANGES`. An approval carrying
-       `Nit:` items is not usable here: mergify merges on approvals and does not check unresolved
-       threads, so those items get dropped.
-     - A finding blocks only when it is valid: it names a `file:line`, cites the rule or the failure mode
-       it violates (repo `AGENTS.md`, `review-checklist.md`, or a concrete broken behavior), and proposes
-       a concrete edit. Open questions and preferences stay in the body without affecting the verdict.
-       Do not re-raise a point a human already answered or dismissed in a reply on the same commit.
-     - `APPROVE` when there is nothing left to change, `COMMENT` when the PR cannot be judged yet.
+   - Determine the verdict from the findings, not from the PR's overall impression. This rubric
+     overrides any loaded skill (including `code-review-and-quality`'s "approve if it improves code
+     health"):
+     - Label every finding `blocking` or `non-blocking` with a one-line justification.
+     - If a finding asks for any edit, it is `blocking`: mergify merges on approvals and does not
+       check unresolved threads, so an approval carrying edit requests drops them. Do not propose a
+       concrete edit and then approve; if it is not worth blocking, keep it as an observation without
+       naming an edit.
+     - `blocking` also covers a concrete failure of the PR's stated goal (data loss, wrong
+       branch/condition, a branch the PR claims to cover but does not) and an existing helper/rule
+       the author has not already committed to follow. Do not downgrade a concrete failure to an
+       open question by calling it "could" or "heuristic".
+     - `non-blocking` is an observation or open question with no edit request, a readability /
+       duplication / preference item that creates no concrete failure, or documented residual risk
+       that the change strictly reduces and the PR does not claim to eliminate. Do not call a
+       finding blocking after admitting the current code works; demote it.
+     - `APPROVE` when nothing is left to change. `COMMENT` only when the PR cannot be judged at all
+       (e.g. unreadable diff, CI outage); code findings are `REQUEST_CHANGES`, not `COMMENT`.
+     - Do not re-raise a point a human already answered or dismissed in a reply on the same commit.
      - Anchor blocking findings as inline comments on the line
        (`gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews -X POST -f event=REQUEST_CHANGES
        -f body=... -f 'comments[][path]=<file>' -F 'comments[][line]=<line>' -f 'comments[][body]=...'`),
@@ -87,11 +119,20 @@ number, URL, or empty) followed by optional flags.
 
 5. **Draft & Submit**:
    - Formulate a concise, pragmatic review summary.
-   - With `--dry-run`: print `--- DRAFT REVIEW (<forge> <target>, verdict, reviewer identity) ---`,
-     the body, and `--- END DRAFT, nothing posted ---`. Post nothing, exit 0.
-   - Otherwise, unless `--post`/`REVIEW_BOT_POST=1` was given, adhere to the write gate: present the
-     target number, forge, active reviewer identity, draft review verdict, and comment body to the
-     user for approval before submitting.
+   - If a write tool is available, write the draft to `<temp-root>/<owner>-<repo>-<PR>.md` outside
+     the worktree; otherwise keep it in memory. The file, when written, is the source of truth and
+     the printed block must match it.
+   - With `--dry-run`: after all tool work and worktree removal, print exactly one final message:
+     `--- DRAFT REVIEW (<forge> <target>, <VERDICT>, reviewer <identity>) ---`
+     where `<target>` is `<owner>/<repo>#<PR>` on GitHub or `<owner>/<repo>!<MR>` on GitLab, the
+     body, and `--- END DRAFT, nothing posted ---`. The verdict is uppercase. No text before or
+     after, no notes, no "to submit" offer, no exit code, and no tool calls after it. If you already
+     printed a draft earlier, repeat the full block as the final message. Post nothing.
+   - If you cannot finish, print `--- REVIEW FAILED (<forge> <target>) ---` plus one line of reason
+     and stop; do not print a partial draft.
+   - Otherwise, unless `--post`/`REVIEW_BOT_POST=1` was given, keep the write gate: print the same
+     draft inside `--- REVIEW BLOCKED (write gate, not posted) ---` and stop. In `pi -p` never ask
+     for approval and never post without `--post`.
    - Submit:
      - **GitHub**:
        ```sh
