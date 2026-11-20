@@ -19,6 +19,11 @@ number, URL, or empty) followed by optional flags.
    - This command's output contract and verdict rubric override any loaded skill. In `pi -p` the
      `code-review` skill's approval/todowrite workflow does not apply: do not ask, offer, plan, or
      request confirmation.
+   - **One target per invocation.** A scope is not a target: a count ("any 10 PRs"), "all"/"every",
+     an org/user or repository-wide request, or several numbers/URLs. For a scope, print
+     `--- REVIEW FAILED (<forge> <scope>) ---` plus
+     `one target per invocation; use /review-as-bot-batch <scope> [--post|--dry-run]`, and stop.
+     Do not enumerate, triage, or call any tool.
 
 1. **Host & Tool Detection**:
    Detect hosting forge from the target URL or from `git remote get-url origin`:
