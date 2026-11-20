@@ -64,6 +64,10 @@ number, URL, or empty) followed by optional flags.
    - Tool budget: after the diff, CI state, review threads, and at most one targeted test, stop
      investigating and draft. Aim for at most ~12 tool calls; do not chase a helper's full call
      graph or an unrelated test failure.
+   - Write planned inline comments to `<temp-root>/<owner>-<repo>-<PR>.inline.json` as
+     `[{"path": ..., "line": ..., "body": ...}]` so the claim gate can validate them.
+   - When you run a command you will cite under "Verified by execution", append the command and its
+     exit code to `<temp-root>/<owner>-<repo>-<PR>.evidence.log` (`$ <command>` then `exit=<code>`).
    - Inspect check runs / CI pipelines:
      - GitHub: `gh-as-bot pr checks <PR>`.
      - GitLab: pipeline status from `glab-as-bot api "projects/<owner>%2F<repo>/merge_requests/<MR>"`.
@@ -115,14 +119,29 @@ number, URL, or empty) followed by optional flags.
      resolved them, even without a new commit; never let a re-roll of the same unresolved state change
      the verdict.
    - Name no model in the review body: the review speaks for the bot, not for a model.
-   - Keep "verified by execution" (command and result) apart from "read only" in the body.
+   - Keep "verified by execution" (command and result) apart from "read only" in the body. Only
+     claim verification for a command that appears in the evidence log with exit 0; if you did not
+     run it, put the evidence under "Read only".
 
 5. **Draft & Submit**:
    - Formulate a concise, pragmatic review summary.
    - If a write tool is available, write the draft to `<temp-root>/<owner>-<repo>-<PR>.md` outside
      the worktree; otherwise keep it in memory. The file, when written, is the source of truth and
      the printed block must match it.
-   - With `--dry-run`: after all tool work and worktree removal, print exactly one final message:
+   - Run the claim gate before printing or posting:
+     ```sh
+     python3 ~/.config/opencode/tools/verify-review-claims.py \
+       --repo <owner>/<repo> --pr <PR> --head <head-sha> \
+       --draft <temp-root>/<owner>-<repo>-<PR>.md \
+       --inline <temp-root>/<owner>-<repo>-<PR>.inline.json \
+       --evidence <temp-root>/<owner>-<repo>-<PR>.evidence.log
+     ```
+     If it exits non-zero, do not post and do not print a DRAFT block: fix the draft and re-run, or
+     print `--- REVIEW BLOCKED (claim verification failed) ---` plus the gate errors and stop. A
+     draft the gate rejected must never be posted. Pass `--strict-evidence` for `--post`; for
+     `--dry-run` the same gate runs with evidence optional.
+   - With `--dry-run`: after all tool work, worktree removal, and the claim gate passes, print
+     exactly one final message:
      `--- DRAFT REVIEW (<forge> <target>, <VERDICT>, reviewer <identity>) ---`
      where `<target>` is `<owner>/<repo>#<PR>` on GitHub or `<owner>/<repo>!<MR>` on GitLab, the
      body, and `--- END DRAFT, nothing posted ---`. The verdict is uppercase. No text before or
