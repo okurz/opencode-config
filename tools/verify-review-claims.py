@@ -14,11 +14,11 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
-from collections import Counter
 
 FAIL_STATES = {"FAILURE", "TIMED_OUT", "CANCELLED", "ACTION_REQUIRED", "STALE"}
 CI_TIMEOUT = 30
 MAX_LOG_BYTES = 8_000_000
+GH_FAILURES = (RuntimeError, ValueError, KeyError, TypeError, AttributeError, OSError)
 
 
 def gh_bin():
@@ -26,7 +26,7 @@ def gh_bin():
 
 
 def run(cmd, cwd=None):
-    return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
+    return subprocess.run(cmd, check=False, cwd=cwd, text=True, capture_output=True)
 
 
 def gh_json(args):
@@ -144,7 +144,7 @@ class Pull:
                     continue
                 files |= parsed
                 sources.append(f"{c['name']} job {num}")
-            except Exception as e:
+            except GH_FAILURES as e:
                 errors.append(f"{c['name']}: {e}")
         self._ci = (files, sources, errors)
         return self._ci
@@ -188,9 +188,13 @@ def main():
     args = ap.parse_args()
 
     errors, warnings = [], []
-    text = open(args.draft, encoding="utf-8").read()
+    with open(args.draft, encoding="utf-8") as f:
+        text = f.read()
+    inline = []
     if args.inline and os.path.exists(args.inline):
-        for c in json.load(open(args.inline, encoding="utf-8")):
+        with open(args.inline, encoding="utf-8") as f:
+            inline = json.load(f)
+        for c in inline:
             text += "\n\n" + (c.get("body") or "")
 
     if not re.search(r"(?m)^Basis:", text):
@@ -208,7 +212,7 @@ def main():
 
     try:
         pull = Pull(args.repo, args.pr, args.head)
-    except Exception as e:
+    except GH_FAILURES as e:
         print(f"claim-verification: cannot read PR: {e}")
         return 2
 
@@ -275,31 +279,31 @@ def main():
     if args.strict_evidence and sec and cmds and not args.evidence:
         errors.append("strict evidence: no --evidence file for Verified by execution")
     if args.evidence and os.path.exists(args.evidence):
-        ev = open(args.evidence, encoding="utf-8", errors="replace").read()
+        with open(args.evidence, encoding="utf-8", errors="replace") as f:
+            ev = f.read()
         for cmd in cmds:
             key = " ".join(cmd.split())
             if key not in ev:
                 errors.append(f"verified command not in evidence log: {key[:100]}")
             elif not re.search(
-                re.escape(key) + r".{0,400}?(?:exit|rc)[=:\s]*0", ev, re.S
+                re.escape(key) + r".{0,400}?(?:exit|rc)[=:\s]*0", ev, re.DOTALL
             ):
                 errors.append(
                     f"verified command has no exit 0 in evidence log: {key[:100]}"
                 )
 
-    if args.inline and os.path.exists(args.inline):
-        for c in json.load(open(args.inline, encoding="utf-8")):
-            path, line = c.get("path"), c.get("line")
-            if path not in pull.files:
-                errors.append(f"inline path not in PR: {path}")
-                continue
-            p = run(["git", "-C", os.getcwd(), "show", f"{pull.head}:{path}"])
-            if p.returncode != 0:
-                errors.append(f"inline path missing at head: {path}")
-                continue
-            n = len(p.stdout.splitlines())
-            if not isinstance(line, int) or line < 1 or line > n:
-                errors.append(f"inline line {line} outside {path} (1..{n})")
+    for c in inline:
+        path, line = c.get("path"), c.get("line")
+        if path not in pull.files:
+            errors.append(f"inline path not in PR: {path}")
+            continue
+        p = run(["git", "-C", os.getcwd(), "show", f"{pull.head}:{path}"])
+        if p.returncode != 0:
+            errors.append(f"inline path missing at head: {path}")
+            continue
+        n = len(p.stdout.splitlines())
+        if not isinstance(line, int) or line < 1 or line > n:
+            errors.append(f"inline line {line} outside {path} (1..{n})")
 
     result = {
         "ok": not errors,
