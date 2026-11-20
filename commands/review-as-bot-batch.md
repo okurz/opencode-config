@@ -13,6 +13,7 @@ Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as
 - a count ("10 PRs", "up to 5") → `--limit N`
 - `--dry-run` → keep it; `--post` or "no dry-run" → omit it (the driver posts by default)
 - `--model <id>` → pass through to the nested review sessions
+- `--oldest` / "backlog" / "oldest first" → `--oldest` (default is newest open PRs)
 - `--recheck` → keep it only when the user wants already-reviewed heads re-examined
 
 Then run `review-bot-batch <flags>` and relay its stderr summary unchanged. The driver filters
