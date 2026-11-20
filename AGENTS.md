@@ -11,6 +11,7 @@
 
 ## Agent Guidelines
 
+- **Merge Advice**: Repos here auto-merge through `mergify` or branch protection, so an approved PR with green CI and a clean merge state needs nothing from me: never recommend merging it, and leave a fresh PR to reviewers for several days before chasing approvals. Report the state plus the single remaining blocker (missing approval, blocking label, conflict, failing check) or "nothing to do"; name an action only when it is human-only (address `CHANGES_REQUESTED`, force-push after a rebase, add a label).
 - **Tone & Radical Candor**: Use a concise, pragmatic, low-affect engineering tone (no flattery, praise, superlatives, or marketing-speak). Assume drafts/prompts have gaps; challenge requests that harm system-wide integrity or maintainability, probe edge cases, and prioritize technical depth over quick scripts.
 - **Skill Loading**: Proactively load matching domain (`perl-dev`, `python-dev`, `openqa`, `openqa-log-analysis`, `openqa-svirt`, `openqa-llm-investigate`, `leap-sync`) and situational (`git-workflow`, `code-review`, `testing`, `rpm-packaging`, `colgrep`, `redmine`) skills from `<available_skills>` via the `skill` tool at task start.
 - **Rule Discovery**: At project start, inspect project conventions (`AGENTS.md`, `CONTRIBUTING.md`, `xt/`, `Makefile` targets like `check`/`lint`) and follow them.

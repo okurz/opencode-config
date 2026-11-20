@@ -32,7 +32,8 @@ Gather local branch status and upstream PR state without modifying working trees
 
 Before ranking, inspect repository-specific merge requirements:
 
-- Inspect `.mergify.yml` or branch protection rules (e.g. required approvals count, required check names, minimum check count `#check-success >= N`, forbidden labels like `acceptance-tests-needed` or `not-ready`, bypass labels like `merge-fast`).
+- Inspect `.mergify.yml` or branch protection rules (e.g. required approvals count, required check names, minimum check count `#check-success >= N`, forbidden labels like `acceptance-tests-needed` or `not-ready`, bypass labels like `merge-fast`). Treat the auto-merger as the actor: a PR that satisfies the rules is finished work, not a task for the user, and an auto-merger that has not fired yet is waiting for reviewers, not for you.
+- Count required approvals from the config, not from `reviewDecision`: `#approved-reviews-by>=2` leaves an `APPROVED` PR with one review unfinished, and the second reviewer may arrive days later.
 - Tally PR checks (`gh pr checks <num>`): distinguish genuine test/linter failures vs. transient infrastructure glitches or outdated base packaging errors (e.g. OBS build failures caused by an old base commit missing recent spec/packaging fixes) that resolve on clean rebase.
 - Focus on actionable code/test fixes (review feedback to address, test adjustments, packaging rebase) over administrative force-merge bypass labels (e.g. `merge-fast`).
 
@@ -40,11 +41,11 @@ Before ranking, inspect repository-specific merge requirements:
 
 Categorize findings into four tiers:
 
-- **Tier 1: Ready to merge today (Zero or minimal code friction)**:
-  - Required approvals met (or needs 1 more approval / label).
+- **Tier 1: Merge-ready, owned by the auto-merger (zero code friction)**:
+  - Every approval the config requires is present, or the only gap is a review the author must await.
   - 0 unresolved review threads / 0 changes requested.
   - CI checks green or only blocked by clean rebase push.
-  - Action: rebase push with lease, remove blocking label, or ping for final approval.
+  - Action: none — the auto-merger merges once its gates pass, so report the PR as finished; act only on a human-only step (rebase push with lease, blocking label, reviewer feedback).
 
 - **Tier 2: Quick-fix unblocks (Low friction)**:
   - 1 minor reviewer request (e.g. nitpick, small test helper refactor).
