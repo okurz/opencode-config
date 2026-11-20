@@ -8,7 +8,19 @@ description: Use when committing verified work, amending, squashing, rebasing, r
 ## Commit discipline
 
 - **Atomic & Verified**: One conceptual change per commit; commit unrelated changes sequentially; split a diff that spans several modules by concept, never by line count. Pass all lint, typecheck, and test checks before committing (avoid commit-then-amend cycles). Verify exit code 0 AND inspect the final 20 lines of test output for coverage/threshold failures. If near-term polish is likely, ask whether to commit now or wait.
-- **Message Format**: Hard-wrap body at 50/80 columns with physical newlines and commit via `git commit -F - <<'EOF'`. For `fix` and `feat` commits, include `Motivation`, `Design Choices`, and `Benefits` headings (1–2 short sentences each). Ceilings only, never floors: ≤10 body lines, ≤2 sentences per section; never pad a body to match diff size, never shrink a diff to skip a section. Write a section only when it carries what the diff cannot: `Motivation` for any behavior change, `Design Choices` for a non-obvious constraint, `Benefits` for a user-visible effect, `How to test` when the project gate is not the test suite. A 1-line diff of a default, flag, timeout, permission or generated-file exclusion gets the full sections, because `git blame` shows only the change. `docs`/`chore`/`style`/`refactor`/dependency bumps: subject plus at most one sentence. Never restate the CI log, the ticket prose or the diff. Append `Related issue: <ticket_URL>` on its own final line when applicable.
+- **Message Format**: Hard-wrap body at 50/80 columns with physical newlines and commit via `git commit -F - <<'EOF'`.
+  Ceilings only, never floors; never pad a body to match diff size and never shrink a diff to fit a tier. A blank line
+  between sections is mandatory: never merge sections or drop separators to save lines. Start at tier (1) and move up
+  only when the diff cannot carry the why, the constraint or the effect:
+  (1) typo, rename, formatting, version or dependency bump, wording-only `docs`/`chore`: subject only;
+  (2) no runtime behavior change but a non-obvious rationale (e.g. `refactor`): one sentence, no sections;
+  (3) runtime behavior change: `Motivation:` required, plus `Design Choices:` for a non-obvious constraint and
+  `Benefits:` for a user-visible effect, each ≤2 sentences;
+  (4) one-line change to a default, flag, timeout, permission or generated-file exclusion (overrides 3): at most one
+  `Motivation:` sentence and one `Benefits:` sentence, no `Design Choices:`, because `git blame` shows only the change.
+  Section order when present: `Motivation:`, `Design Choices:`, `Benefits:`, `How to test:` (only when the project gate
+  is not the test suite), then `Related issue: <ticket_URL>` as the final paragraph when applicable. Prose ceiling:
+  ≤10 lines, excluding labels, blank separators and the trailer. Never restate the CI log, the ticket prose or the diff.
 - **Accuracy & Linting**: Describe only the final diff (never local drafts or avoided mistakes) and do not call the target repo "upstream". Run project commit linters (e.g. `make test-gitlint`) after committing/amending and fix failures via `git commit --amend -F - <<'EOF'`.
 
 ## Stacked & follow-up PRs
