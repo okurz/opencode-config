@@ -4,6 +4,7 @@ package-lock.json
 bun.lock
 context-mode/
 .ruff_cache/
+__pycache__/
 opencode-notifier-state.json
 *.bak
 scripts/
