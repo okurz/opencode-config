@@ -1,6 +1,6 @@
 ---
 description: Review a pull or merge request (GitHub or GitLab) as the configured review bot (defaults to next reviewable open PR/MR)
-argument-hint: "<pr|url> [--post] [--dry-run]"
+argument-hint: "<pr|url> [--post] [--dry-run] [--comment]"
 ---
 
 Review a pull or merge request as the configured review bot. `$ARGUMENTS` is the target (PR/MR
@@ -10,9 +10,13 @@ number, URL, or empty) followed by optional flags.
    - `--dry-run`: print the finished review body and the chosen verdict, post nothing. Use this
      when a post is not (yet) approved.
    - `--post`, or `REVIEW_BOT_POST=1`: skip the write gate in step 5 and submit immediately.
+   - `--comment`: force the verdict to `COMMENT` even when findings are blocking, and report only
+     new or still-unresolved items not already covered by the bot's earlier review. Use it when the
+     bot already has a `CHANGES_REQUESTED` review on this PR, so a re-review adds information without
+     stacking a second block. Combine with `--post` to submit.
    - Neither set: interactive session, the step 5 write gate applies.
-   - `--dry-run` and `--post` are GitHub-only. On GitLab keep the step 5 gate and the `glab-as-bot`
-     flow below unchanged.
+   - `--dry-run`, `--post` and `--comment` are GitHub-only. On GitLab keep the step 5 gate and the
+     `glab-as-bot` flow below unchanged.
    - In a non-interactive run (`pi -p`, `opencode run`) nobody answers: never ask a question and never end with an
      interactive prompt. Finish with a submitted review (`--post`), the dry-run block, the
      blocked-write block, or a `--- REVIEW FAILED ---` block. The harness owns the exit code.

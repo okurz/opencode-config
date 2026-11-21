@@ -1,6 +1,6 @@
 ---
 description: Review many pull requests (an org, repositories, or a count) as the review bot, one isolated session per PR
-argument-hint: "<org|owner/repo...> [--limit N] [--dry-run|--post] [--runner pi|opencode] [--model M]"
+argument-hint: "<org|owner/repo...> [--limit N] [--dry-run|--post] [--runner pi|opencode] [--model M] [--watch] [--interval N]"
 ---
 
 Run the deterministic batch driver. Do not review, triage, or select PRs yourself, and do not call
@@ -17,6 +17,8 @@ Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as
   `opencode run` instead of the default `pi -p`
 - `--oldest` / "backlog" / "oldest first" → `--oldest` (default is newest open PRs)
 - `--recheck` → keep it only when the user wants already-reviewed heads re-examined
+- `--watch` / "continuously" / "keep reviewing" → `--watch`, with `--interval N` when a different
+  gap between cycles is requested (default 1200 s)
 
 Then run `review-bot-batch <flags>` and relay its stderr summary unchanged. The driver filters
 drafts, bot-authored PRs and heads the bot already reviewed, maps each repo to a local checkout,
