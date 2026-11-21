@@ -57,7 +57,7 @@ Categorize findings into four tiers:
   - Not blocked by unmerged parent features.
 
 - **Tier 4: Stale, duplicate, or blocked (Prune / Do not touch)**:
-  - Blocked by unmerged parent branches in a stacked PR chain.
+  - Blocked by unmerged parent branches in a stacked PR chain, or by an unresolved `## Blocked` row in the plan (verified with its recorded read-only command).
   - Competing POCs or experiments without tests.
   - PRs with core architectural objections or failing test suites.
   - Already merged upstream (empty diff or identical patch-id).
