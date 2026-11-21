@@ -9,7 +9,7 @@ Run the deterministic batch driver. Do not review, triage, or select PRs yoursel
 Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as a target:
 - an org or user ("os-autoinst org", "all in os-autoinst", "any 10 PRs in os-autoinst") →
   `--owner os-autoinst`
-- one or more `owner/repo` names → repeat `-R owner/repo`
+- one or more `owner/repo` names → repeat `-R owner/repo`; combine with `--owner` to review their union
 - a count ("10 PRs", "up to 5") → `--limit N`
 - `--dry-run` → keep it; `--post` or "no dry-run" → omit it (the driver posts by default)
 - `--model <id>` → pass through to the nested review sessions
