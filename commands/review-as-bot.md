@@ -13,10 +13,10 @@ number, URL, or empty) followed by optional flags.
    - Neither set: interactive session, the step 5 write gate applies.
    - `--dry-run` and `--post` are GitHub-only. On GitLab keep the step 5 gate and the `glab-as-bot`
      flow below unchanged.
-   - In a non-interactive run (`pi -p`) nobody answers: never ask a question and never end with an
+   - In a non-interactive run (`pi -p`, `opencode run`) nobody answers: never ask a question and never end with an
      interactive prompt. Finish with a submitted review (`--post`), the dry-run block, the
      blocked-write block, or a `--- REVIEW FAILED ---` block. The harness owns the exit code.
-   - This command's output contract and verdict rubric override any loaded skill. In `pi -p` the
+   - This command's output contract and verdict rubric override any loaded skill. In a non-interactive run (`pi -p`, `opencode run`) the
      `code-review` skill's approval/todowrite workflow does not apply: do not ask, offer, plan, or
      request confirmation.
    - **One target per invocation.** A scope is not a target: a count ("any 10 PRs"), "all"/"every",
@@ -155,7 +155,7 @@ number, URL, or empty) followed by optional flags.
    - If you cannot finish, print `--- REVIEW FAILED (<forge> <target>) ---` plus one line of reason
      and stop; do not print a partial draft.
    - Otherwise, unless `--post`/`REVIEW_BOT_POST=1` was given, keep the write gate: print the same
-     draft inside `--- REVIEW BLOCKED (write gate, not posted) ---` and stop. In `pi -p` never ask
+     draft inside `--- REVIEW BLOCKED (write gate, not posted) ---` and stop. In a non-interactive run never ask
      for approval and never post without `--post`.
    - Submit:
      - **GitHub**:

@@ -1,6 +1,6 @@
 ---
 description: Review many pull requests (an org, repositories, or a count) as the review bot, one isolated session per PR
-argument-hint: "<org|owner/repo...> [--limit N] [--dry-run|--post] [--model M]"
+argument-hint: "<org|owner/repo...> [--limit N] [--dry-run|--post] [--runner pi|opencode] [--model M]"
 ---
 
 Run the deterministic batch driver. Do not review, triage, or select PRs yourself, and do not call
@@ -13,10 +13,13 @@ Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as
 - a count ("10 PRs", "up to 5") → `--limit N`
 - `--dry-run` → keep it; `--post` or "no dry-run" → omit it (the driver posts by default)
 - `--model <id>` → pass through to the nested review sessions
+- `--runner opencode` (+ `--auto` when the run must not block on bash permission prompts) → use
+  `opencode run` instead of the default `pi -p`
 - `--oldest` / "backlog" / "oldest first" → `--oldest` (default is newest open PRs)
 - `--recheck` → keep it only when the user wants already-reviewed heads re-examined
 
 Then run `review-bot-batch <flags>` and relay its stderr summary unchanged. The driver filters
 drafts, bot-authored PRs and heads the bot already reviewed, maps each repo to a local checkout,
-and spawns one `pi -p "/review-as-bot <url> --post"` per PR. Never post reviews yourself. If the
+and spawns one nested review session per PR (`pi -p "/review-as-bot <url> --post"`, or
+`opencode run --command review-as-bot "<url> --post"` with `--runner opencode`). Never post reviews yourself. If the
 driver exits non-zero, report its summary and failing log paths; do not retry those PRs.
