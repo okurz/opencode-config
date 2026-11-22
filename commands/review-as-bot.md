@@ -4,12 +4,17 @@ argument-hint: "<pr|url> [--post] [--dry-run] [--comment]"
 ---
 
 Review a pull or merge request as the configured review bot. `$ARGUMENTS` is the target (PR/MR
-number, URL, or empty) followed by optional flags.
+number, URL, or empty) and optional flags; flags may appear before or after the target, so
+`--post <url>` and `<url> --post` are the same mode.
 
 0. **Mode**: take the first non-flag token as the target and parse the flags from the rest.
    - `--dry-run`: print the finished review body and the chosen verdict, post nothing. Use this
      when a post is not (yet) approved.
-   - `--post`, or `REVIEW_BOT_POST=1`: skip the write gate in step 5 and submit immediately.
+   - `--post` in any position, or `REVIEW_BOT_POST=1`: POST MODE. As the first tool call run
+     `printf %s "$REVIEW_BOT_POST"`; POST MODE is on iff it prints `1`. In POST MODE the write gate
+     in step 5 is lifted and submission is required: run the claim gate with `--strict-evidence`,
+     submit, then report the post-condition. Printing the blocked-write block in POST MODE is a
+     contract failure; a `--post` token with an empty env means the run must print the blocked block.
    - `--comment`: force the verdict to `COMMENT` even when findings are blocking, and report only
      new or still-unresolved items not already covered by the bot's earlier review. Use it when the
      bot already has a `CHANGES_REQUESTED` review on this PR, so a re-review adds information without
@@ -156,6 +161,8 @@ number, URL, or empty) followed by optional flags.
      body, and `--- END DRAFT, nothing posted ---`. The verdict is uppercase. No text before or
      after, no notes, no "to submit" offer, no exit code, and no tool calls after it. If you already
      printed a draft earlier, repeat the full block as the final message. Post nothing.
+   - `gh-as-bot` and `glab-as-bot` refuse write calls unless `REVIEW_BOT_POST=1`. A refusal tool
+     result means the run cannot post: print the blocked-write block, do not retry the command.
    - If you cannot finish, print `--- REVIEW FAILED (<forge> <target>) ---` plus one line of reason
      and stop; do not print a partial draft.
    - Otherwise, unless `--post`/`REVIEW_BOT_POST=1` was given, keep the write gate: print the same
