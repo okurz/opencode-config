@@ -22,10 +22,16 @@ through symlinks.
 
 ## Plugins
 
-This tree runs OpenCode V2 and loads `opencode-gemini-auth@2.0.1` and
-`@mohak34/opencode-notifier@1.1.3`. Plugins are fetched at startup, so a fresh
-machine needs network access on first run, and the pins are exact so a running
-install cannot move under itself.
+This tree runs OpenCode V2 and loads `opencode-gemini-auth@2.0.1`,
+`@mohak34/opencode-notifier@1.1.3` and `context-mode@2.2.2`. Plugins are fetched
+at startup, so a fresh machine needs network access on first run, and the pins
+are exact so a running install cannot move under itself.
+
+`context-mode` keeps tool output above 16 KB out of the context window: it
+replaces the result with a pointer and archives the text for `ctx_search` under
+`~/.context-mode/projects/`. Its nine `ctx_*` tools add about 8 KB of schema, so
+the four unused built-ins (`generate_image`, `generate_video`, `websearch`,
+`webfetch`) are disabled in `tools` to offset it.
 
 ## Versions and the V1 legacy sandbox
 
