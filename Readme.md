@@ -22,10 +22,38 @@ through symlinks.
 
 ## Plugins
 
-`opencode.jsonc` loads these plugins: `opencode-gemini-auth` (Gemini OAuth),
-`opencode-notifier`, `opencode-tps-meter`, `opencode-plugin-llama.cpp`, and
-`context-mode`. Plugins are fetched at startup, so a fresh machine needs
-network access on first run.
+This tree runs OpenCode V2 and loads `opencode-gemini-auth@2.0.1` and
+`@mohak34/opencode-notifier@1.1.3`. Plugins are fetched at startup, so a fresh
+machine needs network access on first run, and the pins are exact so a running
+install cannot move under itself.
+
+## Versions and the V1 legacy sandbox
+
+`opencode` resolves to a wrapper in `~/bin` that execs
+`~/.local/opencode2/bin/opencode2` (V2, `@opencode/cli`):
+
+| Path | Purpose |
+|---|---|
+| `~/bin/opencode` | V2 with the default dirs, i.e. this repository |
+| `~/bin/opencode1` | V1 `opencode-ai@1.19.6`, frozen legacy sandbox |
+| `~/.local/opencode2` | V2 npm prefix |
+| `~/.local/opencode1` | V1 npm prefix |
+| `~/.config/opencode-1/opencode/` | V1 config: forked `opencode.jsonc` with the pinned V1 plugin list, every other asset symlinked here |
+| `~/.local/{share,state}/opencode-1/opencode`, `~/.cache/opencode-1/opencode` | V1 data, state and plugin cache |
+
+The V2 wrapper unsets `GEMINI_API_KEY`: `~/.profile` exports a stale key that V2
+would otherwise resolve as the Google credential.
+`cli.json` (V2 terminal client) and `service.json` (background service
+registration) are machine-local and untracked.
+
+V1 is the escape hatch for what the V2 build of `opencode-gemini-auth` no longer
+provides (`/gquota`, quota tool, retry transport, capacity notices) and for
+V1-only plugins
+(`opencode-tps-meter`, `opencode-plugin-llama.cpp`, `context-mode`). Upgrade V2
+explicitly with `npm install -g --prefix ~/.local/opencode2 @opencode/cli@<version>`
+plus `node postinstall.mjs` inside the installed package, because npm runs with
+`ignore-scripts` here. Rollback is repointing `~/bin/opencode` at
+`~/.local/opencode1/bin/opencode`.
 
 ## Providers and secrets
 

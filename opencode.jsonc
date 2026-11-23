@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-gemini-auth@latest", "@mohak34/opencode-notifier@latest", "opencode-tps-meter@latest", "opencode-plugin-llama.cpp@latest", "context-mode"],
+  "plugins": ["opencode-gemini-auth@2.0.1", "@mohak34/opencode-notifier@1.1.3"],
   "formatter": true,
   "snapshot": false,
   "permission": {

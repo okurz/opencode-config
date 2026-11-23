@@ -6,6 +6,8 @@ context-mode/
 .ruff_cache/
 __pycache__/
 opencode-notifier-state.json
+cli.json
+service.json
 *.bak
 scripts/
 
