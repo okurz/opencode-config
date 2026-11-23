@@ -25,6 +25,7 @@ prometheus_llm_url
 *_url
 *.url
 
-# Local logs
+# Local plans and logs (never version-controlled)
+local/
 review-learnings.md
 
