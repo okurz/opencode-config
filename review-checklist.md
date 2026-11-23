@@ -5,7 +5,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 ## Reuse and consistency
 
 - Does the codebase already solve this (helper, query pattern like `WITH RECURSIVE`, module)? `grep` before accepting new code, and `grep` every new method/parameter outside `t/` — a helper only tests call is dead code, even when a follow-up PR is meant to use it.
-- Are repetitive expressions, method calls (including repeated `$validation->is_valid()`/`->param()` accessor calls), or hash lookups cached in a local variable, repeated command flags/options consolidated into a property or helper, and repeated URLs/values across CI steps factored into workflow/job `env`?
+- Are repetitive expressions, method calls (including repeated `$validation->is_valid()`/`->param()` accessor calls), or hash lookups cached in a local variable, repeated command flags/options consolidated into a property or helper, repeated URLs/values across CI steps factored into workflow/job `env`, and time/size/count literals (`86400`, `3600`) or domain strings written as named constants (`Time::Seconds` `ONE_DAY`, `OpenQA::Jobs::Constants`) in lib and tests?
 - Is new prose, documentation, and UI text formatted like surrounding content (line wrapping; sentence case for headings, cards, badges, labels, tooltips, buttons and dropdown options, including every word inside parentheses, e.g. 'Host summary', 'Dark mode (Halloween season)' not 'Dark mode (Halloween Season)', 'Warning' not 'WARNING')?
 
 ## Simplicity
@@ -28,6 +28,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - For alert-suppression, pipeline cancellation, deploy-gating or other CI-side control flow, does each acceptance criterion trace through the exact job outcomes (exit code, `allow_failure`, which later-stage jobs are prevented), and is the auth scope of every API call from a CI job checked against the instance's endpoint list (a `CI_JOB_TOKEN` is read-only for the Pipelines API — `POST /pipelines/:id/cancel` needs a project access token)?
 - Are SQL subqueries, CTEs, and `count()`/`max()`/`GROUP BY` aggregate queries on filtered resultsets (including ones behind public endpoints that load all rows of a table and build `IN` lists in Perl) bounded by an index (`grep` `add_index`/`CREATE INDEX` for the filter columns, check the deployed schema), and are multiple counts merged into one aggregate with `count(*) FILTER (WHERE …)` instead of separate `count()` calls (correlated `EXISTS` over unconstrained `IN`)?
 - Does a setting read in a shared base class leak into subclasses targeting a different host (e.g. hypervisor `sshVirtsh` inheriting SUT `sshXtermVt`)?
+- Does a guard on externally sourced data (file, JSON, API response) validate each field the consumer dereferences, not only the top-level container, and does a test feed every malformed shape (wrong container type, wrong field type, `null`), so reverting the guard fails?
 
 ## Security
 
@@ -36,18 +37,19 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 
 ## External tools and dependencies
 
-- If adding/removing/changing a dependency or external binary, is packaging updated (`dependencies.yaml`, spec `Requires`/`Recommends`) and are remaining references checked?
+- If adding/removing/changing a dependency, external binary or a direct `import`, is every manifest updated (Python: `pyproject.toml` `dependencies`/optional-dependencies — never rely on a transitive pin; packaging: `dependencies.yaml`, spec `Requires`/`Recommends`) and are remaining references checked?
 - In openSUSE container images, are Python deps installed via zypper RPMs (`python3-*`, e.g. `python3-PyYAML`) rather than `pip --break-system-packages` (and no stdlib in pip deps), with `#!BuildTag:` and a non-empty `_meta` title for OBS container builds?
 - Are long options used for external/documented commands (`--debug`, `--mirror` instead of `-d`, `-m`)?
+- Does a `Makefile`/CI test target's optional argument exist and come from the same interpreter/virtualenv the command runs in (grep the variable, e.g. an undefined `$(PYTEST_ARGS)`; probe plugins with `$(PYTHON_RUN)`/`uv run`, not a bare `python3`), and is a conditional flag (`pytest -n auto`) dropped when the suite finishes in hundredths of a second?
 
 ## Quality and Standards
 
 - Does `git log --oneline origin/master..HEAD` show one change class per commit (fix, feat, refactor, build, docs), each independently green, so the fix can be read apart from the feature it ships with?
 - Does each new endpoint, parameter, or filter test assert the returned data (ids, values, rejected inputs with 400/403, combinations with existing filters) instead of only the HTTP status, so that reverting the code fails the test?
-- Do new tests drive the real code path (route, template, SQL statement/conflict case) instead of mocking the method under test or hand-copying its logic, is the `Test::MockModule`/mock import dropped when it is no longer needed, and do new test-suite subs use signatures like production code?
+- Do new tests drive the real code path (route, template, SQL statement/conflict case) instead of mocking the method under test or hand-copying its logic, is the `Test::MockModule`/mock import dropped when it is no longer needed, do new test-suite subs use signatures like production code, and do test description strings claim only what the assertion would catch on revert (no "instead of X" when the test cannot reproduce X), and do set/filter predicates cover the boundary outcomes (empty result, all kept, some dropped) with an explicit fail-open or fail-closed choice?
 - Did all local linting, static analysis (`perlcritic`, `tidy`, `eslint`, `ruff`), the repository's own checker (e.g. `./check_links.py` in the suse/wiki docs repo, `gitlint --commits origin/master..HEAD` for the commit message title regex), and did it run the repo's own target (`make checkstyle`/`make check-ruff`) rather than a bare `ruff check .`, which skips extensionless scripts that the target lints by explicit file list, and unit/author tests pass?
 - Does the PR body say how the change was verified beyond unit tests, with exact commands and links to live runs/PRs/jobs, instead of only claiming it works, and does it still describe the commits on the branch after a history rewrite (no dropped commits, no behaviour the diff narrows silently, e.g. a prune that now deletes only `*.dump` instead of any file)?
-- Does the commit Motivation or PR body state a guarantee the implementation, a test, or CI already provides (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers; a regenerating script is idempotent by definition and a test checks it anyway), is every performance claim grounded in a named dataset and measurement (`EXPLAIN ANALYZE` on o3, 1.14M jobs, 725 workers) instead of an unverifiable one ("3M synthetic jobs ... about 0.5 s"), do variable/option names match the code, can a reader without the author's context parse every term (call a method a method, not a "predicate" or "template helper", unless that term is established in the codebase), and does the PR body follow the repo's own layout (repo `AGENTS.md`, PR template, `openqa` skill) rather than a vendored generic template, so no `Evidence`/`Merge Danger` section appears that the repo does not ask for?
+- Does the commit Motivation or PR body state a guarantee the implementation, a test, or CI already provides (e.g. write-temp-then-`rename` is already atomic for readers; per-PID temp only guards concurrent writers; a regenerating script is idempotent by definition and a test checks it anyway), is every performance claim (also in a review reply) grounded in a named, production-scale input and measurement (`EXPLAIN ANALYZE` on o3, 1.14M jobs, 725 workers; the 702 KiB `default.productcompose`, not the 112-byte test fixture) instead of an unverifiable one ("3M synthetic jobs ... about 0.5 s"), do variable/option names match the code, can a reader without the author's context parse every term (call a method a method, not a "predicate" or "template helper", unless that term is established in the codebase), and does the PR body follow the repo's own layout (repo `AGENTS.md`, PR template, `openqa` skill) rather than a vendored generic template, so no `Evidence`/`Merge Danger` section appears that the repo does not ask for?
 - Is any new user-facing config variable documented in `doc/*.md` (e.g. `doc/backend_vars.md`)?
 - Is interface documentation for a helper/sub written as POD (`=head2`) rather than a leading `#` comment?
 - Is user-requested output (dry-run previews, results) visible at default CLI verbosity (not hidden at `INFO` when default is `WARNING`)?
@@ -62,8 +64,15 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Was every test run started through the repo's own target (`make test-unit-and-integration TESTS=<file>`) instead of bare `prove -l`, so a harness failure is not misreported as "cannot be executed locally"?
 - Is a new Python test file executed by a Makefile target or CI job (this repo only runs `ruff`), or would its assertions never run?
 - Do packaging conditionals agree: units in `%files`, the script behind `%if %{with python_scripts}`, and a matching `%exclude` or `%if`, so rpmbuild does not stop on unpackaged files?
-- Is the `poo#` bugref present and does the ticket it names actually describe this change (open it and read the subject), and does the PR body avoid claims the diff and CI already show?
+- Does `git log --format=%B origin/master..HEAD` show a `Related issue: https://progress.opensuse.org/issues/<id>` line in every feature/fix commit (not only the PR body), was the ticket created before the first commit and does its subject describe this change (open it and read the subject), and does the PR body avoid claims the diff and CI already show?
+
+## Salt states
+
+- Does a `require`/`order` duplicate the ordering Salt already gives states in one sls file (`state_auto_order` runs them top to bottom), and is every cross-file dependency (e.g. a user state in another sls, a package) declared explicitly with `require`?
+- Does a `cmd.run` precondition (`onlyif`, `unless`) hold on a fresh host's first highstate, and does a state that must reconcile (directory, ownership, mode) use an idempotent state (`file.directory`) instead of a one-shot command triggered by `onchanges` on another file?
+- Does a remount, reload, or other command that fails when its target is absent carry a guard (`onlyif: mountpoint -q …`)?
 
 ## Scope
+
 - Is the PR small enough to review in one sitting (< ~300 changed lines), or would a design discussion be cheaper?
 - When adding integration or end-to-end checks to CI, start with a single, fast scenario (e.g. testing directly from git source) rather than waiting on external packaging builds (like OBS) or scheduling full matrices?
