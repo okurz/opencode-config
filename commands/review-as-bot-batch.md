@@ -21,7 +21,11 @@ Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as
   gap between cycles is requested (default 1200 s)
 
 Then run `review-bot-batch <flags>` and relay its stderr summary unchanged. The driver filters
-drafts, bot-authored PRs and heads the bot already reviewed, maps each repo to a local checkout,
+drafts, bot-authored PRs and heads already handled (reviewed, or skipped as having nothing new;
+`--recheck` re-examines both), maps each repo to a local checkout,
 and spawns one nested review session per PR (`pi -p "/review-as-bot <url> --post"`, or
-`opencode run --command review-as-bot "<url> --post"` with `--runner opencode`). Never post reviews yourself. If the
+`opencode run --command review-as-bot "<url> --post"` with `--runner opencode`). A session that
+finds nothing new prints `--- REVIEW SKIPPED` and posts nothing: the driver counts that as success,
+prints `skip` for the PR and records its head in `~/.cache/review-bot/skipped.json` so the next
+cycle does not ask again. Never post reviews yourself. If the
 driver exits non-zero, report its summary and failing log paths; do not retry those PRs.
