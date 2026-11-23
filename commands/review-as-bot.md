@@ -12,19 +12,22 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      when a post is not (yet) approved.
    - `--post` in any position, or `REVIEW_BOT_POST=1`: POST MODE. As the first tool call run
      `printf %s "$REVIEW_BOT_POST"`; POST MODE is on iff it prints `1`. In POST MODE the write gate
-     in step 5 is lifted and submission is required: run the claim gate with `--strict-evidence`,
+     in step 5 is lifted and a review is required: run the claim gate with `--strict-evidence`,
      submit, then report the post-condition. Printing the blocked-write block in POST MODE is a
      contract failure; a `--post` token with an empty env means the run must print the blocked block.
+     The exception is step 4's "no finding survives": that run prints the skip block and posts
+     nothing, which is a success, not a blocked write.
    - `--comment`: force the verdict to `COMMENT` even when findings are blocking, and report only
-     new or still-unresolved items not already covered by the bot's earlier review. Use it when the
-     bot already has a `CHANGES_REQUESTED` review on this PR, so a re-review adds information without
-     stacking a second block. Combine with `--post` to submit.
+     new or still-unresolved items not already covered by the bot's earlier review or raised by a
+     human reviewer. Use it when the bot already has a `CHANGES_REQUESTED` review on this PR, so a
+     re-review adds information without stacking a second block. Combine with `--post` to submit.
    - Neither set: interactive session, the step 5 write gate applies.
    - `--dry-run`, `--post` and `--comment` are GitHub-only. On GitLab keep the step 5 gate and the
      `glab-as-bot` flow below unchanged.
    - In a non-interactive run (`pi -p`, `opencode run`) nobody answers: never ask a question and never end with an
-     interactive prompt. Finish with a submitted review (`--post`), the dry-run block, the
-     blocked-write block, or a `--- REVIEW FAILED ---` block. The harness owns the exit code.
+     interactive prompt. Finish with a submitted review (`--post`), the skip block, the dry-run
+     block, the blocked-write block, or a `--- REVIEW FAILED ---` block. The harness owns the exit
+     code.
    - This command's output contract and verdict rubric override any loaded skill. In a non-interactive run (`pi -p`, `opencode run`) the
      `code-review` skill's approval/todowrite workflow does not apply: do not ask, offer, plan, or
      request confirmation.
@@ -89,7 +92,9 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      reviewer logins come from
      `gh-as-bot pr view <PR> --json reviews,reviewDecision,statusCheckRollup`.
    - Review replies live in the same `repos/<owner>/<repo>/pulls/<PR>/comments` listing; group by
-     `in_reply_to_id`. Never call an `/in_reply_to` endpoint.
+     `in_reply_to_id`. Never call an `/in_reply_to` endpoint. Collect what human reviewers said —
+     threads with their path and line, review bodies without one: step 4 drops a finding they
+     already raised.
    - Verification runs: use unauthenticated API/`openqa-cli`; never read `~/.config/openqa/client.conf`
      or other credential files.
    - Read `~/.config/opencode/review-checklist.md` and load only skills that supply domain facts
@@ -120,7 +125,14 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
        finding blocking after admitting the current code works; demote it.
      - `APPROVE` when nothing is left to change. `COMMENT` only when the PR cannot be judged at all
        (e.g. unreadable diff, CI outage); code findings are `REQUEST_CHANGES`, not `COMMENT`.
-     - Do not re-raise a point a human already answered or dismissed in a reply on the same commit.
+     - A human's point is not a bot finding: drop any finding whose point a human reviewer already
+       raised on this PR, in a thread, review body or comment, at any commit. Never restate an
+       unresolved human thread (not as a finding, not as "still unresolved"), and never request
+       changes because a human did.
+     - No finding survives: everything worth saying a human already said, or only non-blocking
+       observations with no edit request remain. Post nothing at all (step 5): no review, no
+       comment, no explanation. When the merge is only waiting for an approval (green CI, no open
+       human request), that approval is still a review with an empty body.
      - Anchor blocking findings as inline comments on the line
        (`gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews -X POST -f event=REQUEST_CHANGES
        -f body=... -f 'comments[][path]=<file>' -F 'comments[][line]=<line>' -f 'comments[][body]=...'`),
@@ -133,12 +145,17 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      resolved them, even without a new commit; never let a re-roll of the same unresolved state change
      the verdict.
    - Name no model in the review body: the review speaks for the bot, not for a model.
-   - Keep "verified by execution" (command and result) apart from "read only" in the body. Only
-     claim verification for a command that appears in the evidence log with exit 0; if you did not
-     run it, put the evidence under "Read only".
+   - Evidence supports a finding; it is not a status report. Only claim verification for a command that
+     appears in the evidence log with exit 0; if you did not run it, say so under "Read only". Every
+     line under `Verified by execution` and `Read only` must back a finding above it; a fact the diff
+     and CI already show, or one no finding needs, stays out of the body.
 
 5. **Draft & Submit**:
    - Formulate a concise, pragmatic review summary.
+   - No finding survived step 4: remove the worktree, print exactly
+     `--- REVIEW SKIPPED (<forge> <target>, nothing new) ---` and stop. No draft file, no claim gate,
+     no review, no comment: a review that repeats a human's thread or lists facts the diff and CI
+     already show is noise the author has to read anyway. This is the whole output for `--dry-run` too.
    - If a write tool is available, write the draft to `<temp-root>/<owner>-<repo>-<PR>.md` outside
      the worktree; otherwise keep it in memory. The file, when written, is the source of truth and
      the printed block must match it.
@@ -155,7 +172,7 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      draft the gate rejected must never be posted. Pass `--strict-evidence` for `--post`; for
      `--dry-run` the same gate runs with evidence optional.
    - With `--dry-run`: after all tool work, worktree removal, and the claim gate passes, print
-     exactly one final message:
+     exactly one final message (a skip above is the whole output instead):
      `--- DRAFT REVIEW (<forge> <target>, <VERDICT>, reviewer <identity>) ---`
      where `<target>` is `<owner>/<repo>#<PR>` on GitHub or `<owner>/<repo>!<MR>` on GitLab, the
      body, and `--- END DRAFT, nothing posted ---`. The verdict is uppercase. No text before or
