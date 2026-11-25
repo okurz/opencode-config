@@ -9,6 +9,7 @@ description: Use when addressing GitHub PR or code-review comments, reviewer fee
 - **Fetch Feedback**: Use `gh` to fetch PR review comments; for `#discussion_r(\d+)` URLs, fetch only `gh api repos/:owner/:repo/pulls/comments/:id`.
 - **Verify-Implement-Verify & Fixup**: Reproduce/verify the issue, apply the fix, re-run tests/lint, and commit with `git commit --fixup <commit_hash>` unless rebase/new commit is requested.
 - **No Force Push**: Never force-push unless the user explicitly confirms it is safe.
+- **Reply Claims**: Check every scale, bound, or performance claim in a drafted reply against `~/.config/opencode/review-checklist.md` before posting; pre-push review runs before replies are drafted, so its "also in a review reply" clause is not covered by it.
 - **Pre-Push & Checklist**: Check `~/.config/opencode/review-checklist.md` before coding; run `/pre-push-review` before pushing or opening a PR and resolve all `blocker`/`should-fix` items.
 - **Review Bot Persona**: When submitting reviews as a designated review bot (e.g. `os-autoinst-review`):
   - For GitHub repos: use `gh-as-bot` (or pass `GH_TOKEN` loaded from `~/.config/review-assistant/write.env` / `write-classic-public_repo.env`).

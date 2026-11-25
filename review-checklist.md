@@ -53,6 +53,7 @@ Distilled from `review-learnings.md`. Read by `/pre-push-review` and `/address-r
 - Is any new user-facing config variable documented in `doc/*.md` (e.g. `doc/backend_vars.md`)?
 - Is interface documentation for a helper/sub written as POD (`=head2`) rather than a leading `#` comment?
 - Is user-requested output (dry-run previews, results) visible at default CLI verbosity (not hidden at `INFO` when default is `WARNING`)?
+- When adding or reordering a DataTables column, do the template `<th>` order, `columns`/`columnDefs` targets, note-row colspan and every `th`/`td:nth-child(n)` selector in `t/ui` move together, does the new column sit before the trailing time column (`Finished`) that every openQA job table ends with, and does the test assert the whole header order so a reorder fails?
 - Are variable/parameter/target names and UI labels/table headers accurate, non-colliding with existing project terms (`repo_type` vs `obs_repo_type`; `Roles`/`role` not `Permissions` for openQA access levels), matching underlying form control names/IDs, consistent across siblings (`label_a`/`label_b`), and protocol-specific for global settings (`SUT_SSH_PORT` not `SUT_PORT`)?
 - Do build targets (`Makefile`, `CMakeLists.txt`) write only local build artifacts without touching system paths, package managers, or root privileges?
 
