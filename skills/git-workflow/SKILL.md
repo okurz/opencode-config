@@ -32,6 +32,10 @@ description: Use when committing verified work, amending, squashing, rebasing, r
 - **Body**: lead with an `After:` bullet list of every base PR number (e.g. `After:\n* #8107`) so GitHub renders each base PR's title and status inline; keep the body shorter than the base PR's.
 - **Draft While Stacked**: open with `--draft` until all blocking bases are merged and their gates are satisfied, so merge-activated automation (mergify rules, CI deploys) cannot fire prematurely.
 
+## Merging
+
+- **Never Merge By Hand**: `gh pr merge` and `glab mr merge` write shared state; leave the merge to mergify or branch protection, which fire when the repo rule holds (approval count, labels, checks, mergeable state). If the forge does not merge, report the single missing condition instead, e.g. a rule that needs two approvals while only one exists.
+
 ## Rebase & conflict resolution
 
 - **Staged Changes in Rebase**: During `git rebase`, `Changes to be committed:` in `git status` are the _local commit's_ changes being replayed, NOT the existing state of `origin/master` (`HEAD`).
