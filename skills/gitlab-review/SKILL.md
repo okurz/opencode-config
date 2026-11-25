@@ -65,3 +65,12 @@ GitLab has no native `REQUEST_CHANGES` review verb. Map verdicts as follows:
   glab-as-bot mr approve <iid>
   ```
 - If a call fails with `403 {error: insufficient_scope}`, the token lacks `api` write scope; verify token permissions in `~/.config/review-assistant/<host-slug>.env`.
+
+## Creating fork-to-upstream MRs
+
+- `source_project_id` is not a merge-request create parameter: sending it is ignored and the MR ends up
+  in the target project pointing at a nonexistent branch (API shows `sha: null`, `has_conflicts: true`,
+  no diff). Create in the **fork** project with the target id instead:
+  `POST projects/<fork>%2F<repo>/merge_requests -f source_branch=<b> -f target_branch=master -f target_project_id=<upstream id>`.
+- Verify with `.../merge_requests/<iid>`: `sha` non-null, `has_conflicts: false`, and `.../changes` listing
+  the expected files.
