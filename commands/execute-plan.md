@@ -8,5 +8,5 @@ Implement only ${2:-commit 1} of the plan. Run the plan's `## Gates` command for
 Take every design decision from the plan's `## Approvals`; never invent a decision the plan does not record.
 If the unit appears in the plan's `## Blocked`, run that row's verification command read-only first: report `unmet` and stop when the condition is not satisfied, otherwise record `met` and today's date in the plan, then implement.
 Stop before any remote, deploy, reboot, service start, install, or `ssh` write the plan names, and ask before one.
-Never stage, commit, `rm`, or delete anything under `tasks/`; move the plan to `wip/` with plain `mv` when its code starts.
+Never stage, commit, `rm`, or delete anything under `tasks/`; move the plan to `wip/` with plain `mv` when its code starts, always inside `$(git plans-dir)` rather than a path relative to the current worktree.
 Report: the unit done, the plan sections touched, the uncommitted files, the next unit, and the plan's `## Session starter` for the next session.

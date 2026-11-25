@@ -5,7 +5,7 @@ argument-hint: "[next focus]"
 
 Load the `handoff` skill. Next focus: $ARGUMENTS
 
-Before writing, check whether a `tasks/` plan already carries the decisions. If it does, update
+Before writing, check whether a `tasks/` plan in `$(git plans-dir)` already carries the decisions. If it does, update
 its `## Session starter`, `## Approvals` and `## Blocked` rows and report that no handoff is
 needed; write the document only for decisions that live in the transcript.
 
