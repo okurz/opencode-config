@@ -20,6 +20,8 @@ Translate `$ARGUMENTS` into driver flags — never pass fuzzy wording through as
   gap between cycles is requested (default 1200 s)
 - `--shard i/n` → keep it; two batches on the same scope need disjoint shards, since the driver
   picks by PR number and not by class
+- "how timely are the reviews", latency, backlog rate → `--latency-report` (`--since-days N` to
+  change the window): it reads the ledger only, posts nothing, and exits non-zero on a breach
 - "only what blocks", "backlog", "stale" → `--only-blocked` (blocks only), or explain that the
   driver already schedules by what the bot owes: C1 a head past the bot's verdict, C2 activity
   after a verdict, C3/C4 never reviewed (fresh, stale), with reserved slots for C3/C4
