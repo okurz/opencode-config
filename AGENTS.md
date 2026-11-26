@@ -2,7 +2,7 @@
 
 ## Constraints
 
-- `tasks/` or `local/tasks/`: Read/write for planning. NEVER run `git add`, `git commit`, `git rm`, `rm`, or any deletion on this directory.
+- `tasks/` or `local/tasks/`: Read/write for planning. Plans never belong to the code repo: run `git add`/`git commit` on plan files only inside a dedicated plans repo (`tasks/.git`, e.g. `openQA-tasks`), never in the checkout that hosts the directory. Never `rm` a plan file.
 - `tasks/` layout: root = active plans; `wip/` = implementation started; `review/` = done, awaiting review; `completed/` = archived; `todo.md` = backlog. Move finished plans to `completed/` with plain `mv` (never `git mv` or `git rm`).
 - Plans gated on an external event (PR merge, unmerged dependency, human approval, production window) stay in their lifecycle dir and carry `## Blocked`: condition, read-only verification command, date recorded. A plan with an unresolved gate is not active: run the command, record the result and the date in the plan, then execute. No `blocked/` dir: the dir axis is lifecycle only, and a `wip`-plan can be gated.
 - `AGENTS.md`: Do not version control (unless already under version control).
