@@ -99,7 +99,9 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      for the author and refuses a new inline comment where such a thread already sits.
    - Write the replies to `<temp-root>/<owner>-<repo>-<PR>.replies.json` as
      `[{"id": <root comment id>, "body": ...}]`: one per bot thread whose last comment has no human
-     reply and whose finding still stands at head. `--dry-run` writes the file and posts none of them.
+     reply and whose finding still stands at head. That reply is the whole output of such a run: an
+     open point of the bot never needs a review of its own. `--dry-run` writes the file and posts none
+     of them.
    - Verification runs: use unauthenticated API/`openqa-cli`; never read `~/.config/openqa/client.conf`
      or other credential files.
    - Read `~/.config/opencode/review-checklist.md` and load only skills that supply domain facts
@@ -168,10 +170,11 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      it from the docs.
 
 5. **Draft & Submit**:
-   - No finding survived step 4: remove the worktree, print exactly
-     `--- REVIEW SKIPPED (<forge> <target>, nothing new) ---` and stop. No draft file, no claim gate,
-     no review, no comment: a review that repeats a human's thread or lists facts the diff and CI
-     already show is noise the author has to read anyway. This is the whole output for `--dry-run` too.
+   - Nothing worth posting survived step 4 and no bot thread waits for an answer: remove the
+     worktree, print exactly `--- REVIEW SKIPPED (<forge> <target>, nothing new) ---` and stop. No
+     draft file, no claim gate, no review, no comment: a review that repeats a human's thread or lists
+     facts the diff and CI already show is noise the author has to read anyway. This is the whole
+     output for `--dry-run` too.
    - Compose the findings, not a summary: the body is the gate's. It is an optional one line, then the
      findings that no line of the diff can carry, then a collapsed block with the report. One finding
      is one paragraph of at most 300 characters. No sentence may repeat an inline comment, an earlier
@@ -199,6 +202,12 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      and re-run, or print `--- REVIEW BLOCKED (claim verification failed) ---` plus the gate errors
      and stop. A draft the gate rejected must never be posted. Pass `--strict-evidence` for `--post`;
      for `--dry-run` the same gate runs with evidence optional.
+   - Only replies to post, no review: no inline comment and no unanchored finding survived (the gate's
+     one line says nothing the reply does not), and the bot's verdict already covers this head. Post
+     the replies file and print exactly
+     `--- REVIEW SKIPPED (<forge> <target>, replied in <n> thread(s)) ---`. In `--dry-run` print that
+     block and post nothing, and a claim gate that rejects a reply target stops the run as a blocked
+     review instead.
    - With `--dry-run`: after all tool work, worktree removal, and the claim gate passes, print
      exactly one final message (a skip above is the whole output instead):
      `--- DRAFT REVIEW (<forge> <target>, <VERDICT>, reviewer <identity>) ---`

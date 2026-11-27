@@ -46,6 +46,9 @@ def test_command_no_longer_asks_for_a_summary_or_a_basis_in_the_draft(dropped):
         ".threads.json",
         ".replies.json",
         "comments/<id>/replies",
+        "replied in <n> thread(s)",
+        "no bot thread waits for an answer",
+        "never needs a review of its own",
     ],
 )
 def test_command_states_the_body_rules_and_the_report_file(kept):
