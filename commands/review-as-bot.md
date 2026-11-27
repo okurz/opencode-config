@@ -19,8 +19,9 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      nothing, which is a success, not a blocked write.
    - `--comment`: force the verdict to `COMMENT` even when findings are blocking, and report only
      new or still-unresolved items not already covered by the bot's earlier review or raised by a
-     human reviewer. Use it when the bot already has a `CHANGES_REQUESTED` review on this PR, so a
-     re-review adds information without stacking a second block. Combine with `--post` to submit.
+     human reviewer. Use it only when the bot's `CHANGES_REQUESTED` review covers the current head, so a
+     re-review adds information without stacking a second block; a changed head needs the full verdict,
+     otherwise the bot can never lift its own block. Combine with `--post` to submit.
    - Neither set: interactive session, the step 5 write gate applies.
    - `--dry-run`, `--post` and `--comment` are GitHub-only. On GitLab keep the step 5 gate and the
      `glab-as-bot` flow below unchanged.
@@ -148,7 +149,10 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
    - Evidence supports a finding; it is not a status report. Only claim verification for a command that
      appears in the evidence log with exit 0; if you did not run it, say so under "Read only". Every
      line under `Verified by execution` and `Read only` must back a finding above it; a fact the diff
-     and CI already show, or one no finding needs, stays out of the body.
+     and CI already show, or one no finding needs, stays out of the body. A finding that a documented
+     setting is unread needs the consumer repos grepped too (a backend var such as `SUT_IP` is read by
+     `os-autoinst-distri-*`, never by os-autoinst): a repo-local grep cannot back a suggestion to drop
+     it from the docs.
 
 5. **Draft & Submit**:
    - Formulate a concise, pragmatic review summary.
