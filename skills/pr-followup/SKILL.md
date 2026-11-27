@@ -45,7 +45,8 @@ More than one own open PR that owes an answer: `/pr-sweep` drives the loop inste
 `/pr-watch` by hand.
 
 - **Scope**: only my PRs that still owe an answer — `CHANGES_REQUESTED`, or a failing required check.
-  A PR waiting for a missing approval owes nothing (`Merge Advice`).
+  A PR waiting for a missing approval owes nothing (`Merge Advice`), and a PR another session already
+  works stays out (`--exclude 1,2`).
 - **One worktree per PR**: reuse the checkout that already has the PR branch, else create
   `~/local/worktrees/<repo>-<PR#>`. Never run two sessions in one worktree, and never work a PR whose
   worktree is dirty or lacks commits of the PR head: both mean an earlier session is mid-change.
