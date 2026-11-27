@@ -327,3 +327,34 @@ def test_rejects_a_reply_without_a_body(gate):
     code, out = gate(threads=threads, replies=[{"id": 7, "body": "  "}])
     assert code == 1
     assert any("has no body" in error for error in out["errors"])
+
+
+def test_rejects_an_inline_comment_on_a_line_that_already_carries_a_bot_thread(gate):
+    threads = [comment(7, "The fetch_data point.", path="t/01-foo.t", line=3)]
+    inline = [
+        {
+            "path": "t/01-foo.t",
+            "line": 3,
+            "body": "A different wording of the same point.",
+        }
+    ]
+    code, out = gate(inline=inline, threads=threads)
+    assert code == 1
+    assert any("reply in it" in error for error in out["errors"])
+
+
+def test_allows_an_inline_comment_next_to_a_bot_thread_or_a_human_one(gate):
+    threads = [
+        comment(7, "The fetch_data point.", path="t/01-foo.t", line=3),
+        comment(8, "A human point.", login="okurz", path="t/01-foo.t", line=9),
+    ]
+    inline = [
+        {
+            "path": "t/01-foo.t",
+            "line": 9,
+            "body": "The retry loop drops the last error.",
+        },
+        {"path": "t/01-foo.t", "line": 11, "body": "The guard is unreachable."},
+    ]
+    code, out = gate(inline=inline, threads=threads)
+    assert code == 0, out["errors"]

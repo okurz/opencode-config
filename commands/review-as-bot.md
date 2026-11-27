@@ -93,9 +93,13 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      reviewer logins come from
      `gh-as-bot pr view <PR> --json reviews,reviewDecision,statusCheckRollup`.
    - Review replies live in the same `repos/<owner>/<repo>/pulls/<PR>/comments` listing; group by
-     `in_reply_to_id`. Never call an `/in_reply_to` endpoint. Collect what human reviewers said —
-     threads with their path and line, review bodies without one: step 4 drops a finding they
-     already raised.
+     `in_reply_to_id`. Collect what human reviewers said — threads with their path and line, review
+     bodies without one: step 4 drops a finding they already raised. Keep the listing as
+     `<temp-root>/<owner>-<repo>-<PR>.threads.json`: the gate counts the bot's threads that still wait
+     for the author and refuses a new inline comment where such a thread already sits.
+   - Write the replies to `<temp-root>/<owner>-<repo>-<PR>.replies.json` as
+     `[{"id": <root comment id>, "body": ...}]`: one per bot thread whose last comment has no human
+     reply and whose finding still stands at head. `--dry-run` writes the file and posts none of them.
    - Verification runs: use unauthenticated API/`openqa-cli`; never read `~/.config/openqa/client.conf`
      or other credential files.
    - Read `~/.config/opencode/review-checklist.md` and load only skills that supply domain facts
@@ -146,6 +150,9 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
        not part of the diff (unchanged line, or the review is submitted after a force-push), the
        finding goes into the body instead of failing the API call; a point that fits an inline
        comment never goes into the body as well.
+     - A point that recurs on a line that already carries a bot thread is a reply in that thread
+       (step 5, GitHub only), never a new root comment and never body text: the gate rejects an
+       inline comment on a position the bot already holds.
    - Keep the verdict stable per commit, not per sampling run: check the bot's own earlier reviews on this
      head sha and its still-unresolved threads. If it requested changes on this sha and those threads are
      unresolved, keep that verdict and only add what the earlier review missed. Approve once the author
@@ -179,6 +186,8 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
        --repo <owner>/<repo> --pr <PR> --head <head-sha> \
        --draft <temp-root>/<owner>-<repo>-<PR>.md \
        --report "${REVIEW_BOT_REPORT:-<temp-root>/<owner>-<repo>-<PR>.report.md}" \
+       --threads <temp-root>/<owner>-<repo>-<PR>.threads.json \
+       --replies <temp-root>/<owner>-<repo>-<PR>.replies.json \
        --inline <temp-root>/<owner>-<repo>-<PR>.inline.json \
        --evidence <temp-root>/<owner>-<repo>-<PR>.evidence.log \
        --json > <temp-root>/<owner>-<repo>-<PR>.gate.json
@@ -205,12 +214,14 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      draft inside `--- REVIEW BLOCKED (write gate, not posted) ---` and stop. In a non-interactive run never ask
      for approval and never post without `--post`.
    - Submit:
-     - **GitHub**:
+     - **GitHub**: post the replies first, then the review, so a still-open point lands in its own
+       thread instead of a second one:
        ```sh
-       gh-as-bot pr review <PR> --<verdict> --body "<comment>"
+       gh-as-bot api -X POST repos/<owner>/<repo>/pulls/<PR>/comments/<id>/replies -f body="<reply>"
+       gh-as-bot pr review <PR> --<verdict> --body "<body>"
        gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews --jq '.[-1] | .user.login + " " + .state + " " + .html_url'
        ```
-       The second command is the post-condition: it must report the bot login, not the human account.
+       The last command is the post-condition: it must report the bot login, not the human account.
        Treat any other login as a failed run and say so.
      - **GitLab**:
        Write body to file, then comment and optionally approve:

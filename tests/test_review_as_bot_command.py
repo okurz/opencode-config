@@ -43,6 +43,9 @@ def test_command_no_longer_asks_for_a_summary_or_a_basis_in_the_draft(dropped):
         "collapsed block with the report",
         "at most 300 characters",
         "8-word run with an inline comment",
+        ".threads.json",
+        ".replies.json",
+        "comments/<id>/replies",
     ],
 )
 def test_command_states_the_body_rules_and_the_report_file(kept):

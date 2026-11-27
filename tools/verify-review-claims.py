@@ -434,6 +434,17 @@ def main():
                 f"verified command has no exit 0 in evidence log: {key[:100]}"
             )
 
+    bot = args.bot or bot_login()
+    if threads and not bot:
+        errors.append("cannot tell which comments are the bot's: pass --bot")
+    open_roots = still_open(threads, bot) if bot else []
+    open_ids = {c.get("id") for c in open_roots}
+    threaded = {
+        (c.get("path"), c.get("line") or c.get("original_line")): c
+        for c in threads
+        if not c.get("in_reply_to_id") and login(c) == bot
+    }
+
     for c in inline:
         path, line = c.get("path"), c.get("line")
         if path not in pull.files:
@@ -446,12 +457,12 @@ def main():
         n = len(p.stdout.splitlines())
         if not isinstance(line, int) or line < 1 or line > n:
             errors.append(f"inline line {line} outside {path} (1..{n})")
+            continue
+        if (path, line) in threaded:
+            errors.append(
+                f"inline comment repeats the bot's thread at {path}:{line}: reply in it"
+            )
 
-    bot = args.bot or bot_login()
-    if threads and not bot:
-        errors.append("cannot tell which comments are the bot's: pass --bot")
-    open_roots = still_open(threads, bot) if bot else []
-    open_ids = {c.get("id") for c in open_roots}
     one_liner = compose_one_liner(
         round_text, len(open_roots), last_review_date(pull, bot)
     )
