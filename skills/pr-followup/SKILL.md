@@ -58,7 +58,10 @@ More than one own open PR that owes an answer: `/pr-sweep` drives the loop inste
   share a cluster. Give each session its own (`/dev/shm/tpg-sweep-<PR#>`), or run only the tests that
   touch the diff and leave the full matrix to PR CI.
 - **Resume**: `<cache>/<slug>.json` records the head each session worked on, `<cache>/logs/<slug>.log`
-  its transcript; a log ending in `PR SWEEP TIMEOUT` is unfinished work, not an approval.
+  its JSONL transcript, so a run started with `setsid … &` can be tailed from a later call. A session
+  killed at the timeout leaves its checkout mid-operation: that reports as `unfinished` with the command
+  that finishes it, and a branch rebased past the PR head still counts as workable. Set
+  `PR_SWEEP_MODEL` when the runner's own default model is unavailable.
 
 ## Stopping
 
