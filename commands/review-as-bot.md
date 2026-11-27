@@ -163,7 +163,7 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
    - Name no model in the review body: the review speaks for the bot, not for a model.
    - Evidence supports a finding; it is not a status report. Only claim verification for a command that
      appears in the evidence log with exit 0; if you did not run it, say so under "Read only". Every
-     line under `Verified by execution` and `Read only` must back a finding it substantiates; a fact the diff
+     line under `Verified by execution` and `Read only` must back a finding; a fact the diff
      and CI already show, or one no finding needs, stays out of the body. A finding that a documented
      setting is unread needs the consumer repos grepped too (a backend var such as `SUT_IP` is read by
      `os-autoinst-distri-*`, never by os-autoinst): a repo-local grep cannot back a suggestion to drop
