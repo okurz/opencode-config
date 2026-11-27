@@ -22,6 +22,7 @@ overrides.
     "tracker_id": 4,
     "subject": "[infra] …",
     "description": "## Observation\n…",
+    "category_id": 817,
     "priority_id": 4
   }
 }
@@ -29,6 +30,11 @@ overrides.
 
 - IDs: `GET /projects/<id>.json?include=trackers` lists tracker ids; `GET /projects.json?limit=100`
   finds a project. `openQA Infrastructure (public)` is project 125, tracker `action` is 4.
+- The ticket type is a `category_id`, never a keyword in the subject: a feature ticket gets
+  the project's `Feature requests` category, not ` (feature)` appended to the subject. Ids
+  are per project — `GET /projects/<id>.json?include=issue_categories` — as Feature requests
+  / Organisational / Regressions-Crashes / Support: 125 → 811/814/817/820, 18 →
+  142/208/134/188.
 - House style there: subject `[infra] <what> <where>` (add `[alert]` for alert tickets), description
   sections `## Observation`, then `## Acceptance criteria` with `* **AC1:** …`, then `## Suggestions`
   last, with `#<id>` references inline. One ticket per root cause.
