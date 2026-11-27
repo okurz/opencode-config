@@ -102,7 +102,12 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      (`openqa`, `perl-dev`, `python-dev`, `testing`). Do not load `code-review` (it is for addressing
      feedback, not bot review). If `openqa` is loaded, ignore its PR-review/post playbook
      (`openqa/SKILL.md` section F).
-   - Record the basis in the draft: `Basis: review-checklist.md; skills: <names or none>`.
+   - Record the basis in the report file, not in the draft: `Basis: review-checklist.md; skills:
+     <names or none>`, optionally `Round: <what changed in this round>`, then `Verified by
+     execution:` with one `- `<command>` at <sha>: exit 0` per command in the evidence log, then
+     `Read only:` for what you read without running. Write it to `$REVIEW_BOT_REPORT` when set,
+     else `<temp-root>/<owner>-<repo>-<PR>.report.md`. The claim gate composes the posted body from
+     this file.
 
 4. **Assess Quality**:
    - Verify alignment with project conventions, commit style (Conventional Commits, 50/80 rule), and
@@ -137,9 +142,10 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
      - Anchor blocking findings as inline comments on the line
        (`gh-as-bot api repos/<owner>/<repo>/pulls/<PR>/reviews -X POST -f event=REQUEST_CHANGES
        -f body=... -f 'comments[][path]=<file>' -F 'comments[][line]=<line>' -f 'comments[][body]=...'`),
-       so the author sees them next to the code; keep body-only findings for the summary. When the line is
-       not part of the diff (unchanged line, or the review is submitted after a force-push), keep the
-       finding in the body instead of failing the API call.
+       so the author sees them next to the code. When the line is
+       not part of the diff (unchanged line, or the review is submitted after a force-push), the
+       finding goes into the body instead of failing the API call; a point that fits an inline
+       comment never goes into the body as well.
    - Keep the verdict stable per commit, not per sampling run: check the bot's own earlier reviews on this
      head sha and its still-unresolved threads. If it requested changes on this sha and those threads are
      unresolved, keep that verdict and only add what the earlier review missed. Approve once the author
@@ -148,33 +154,42 @@ number, URL, or empty) and optional flags; flags may appear before or after the 
    - Name no model in the review body: the review speaks for the bot, not for a model.
    - Evidence supports a finding; it is not a status report. Only claim verification for a command that
      appears in the evidence log with exit 0; if you did not run it, say so under "Read only". Every
-     line under `Verified by execution` and `Read only` must back a finding above it; a fact the diff
+     line under `Verified by execution` and `Read only` must back a finding it substantiates; a fact the diff
      and CI already show, or one no finding needs, stays out of the body. A finding that a documented
      setting is unread needs the consumer repos grepped too (a backend var such as `SUT_IP` is read by
      `os-autoinst-distri-*`, never by os-autoinst): a repo-local grep cannot back a suggestion to drop
      it from the docs.
 
 5. **Draft & Submit**:
-   - Formulate a concise, pragmatic review summary.
    - No finding survived step 4: remove the worktree, print exactly
      `--- REVIEW SKIPPED (<forge> <target>, nothing new) ---` and stop. No draft file, no claim gate,
      no review, no comment: a review that repeats a human's thread or lists facts the diff and CI
      already show is noise the author has to read anyway. This is the whole output for `--dry-run` too.
-   - If a write tool is available, write the draft to `<temp-root>/<owner>-<repo>-<PR>.md` outside
-     the worktree; otherwise keep it in memory. The file, when written, is the source of truth and
-     the printed block must match it.
+   - Compose the findings, not a summary: the body is the gate's. It is an optional one line, then the
+     findings that no line of the diff can carry, then a collapsed block with the report. One finding
+     is one paragraph of at most 300 characters. No sentence may repeat an inline comment, an earlier
+     thread or a human's point, and no list of what you checked goes into the draft: the gate fails a
+     body that shares an 8-word run with an inline comment.
+   - Write the findings to `<temp-root>/<owner>-<repo>-<PR>.md` outside the worktree; otherwise keep
+     them in memory. The draft holds findings only, the report file holds the basis and the evidence,
+     and the printed block carries the body the gate composed from both.
    - Run the claim gate before printing or posting:
      ```sh
      python3 ~/.config/opencode/tools/verify-review-claims.py \
        --repo <owner>/<repo> --pr <PR> --head <head-sha> \
        --draft <temp-root>/<owner>-<repo>-<PR>.md \
+       --report "${REVIEW_BOT_REPORT:-<temp-root>/<owner>-<repo>-<PR>.report.md}" \
        --inline <temp-root>/<owner>-<repo>-<PR>.inline.json \
-       --evidence <temp-root>/<owner>-<repo>-<PR>.evidence.log
+       --evidence <temp-root>/<owner>-<repo>-<PR>.evidence.log \
+       --json > <temp-root>/<owner>-<repo>-<PR>.gate.json
      ```
-     If it exits non-zero, do not post and do not print a DRAFT block: fix the draft and re-run, or
-     print `--- REVIEW BLOCKED (claim verification failed) ---` plus the gate errors and stop. A
-     draft the gate rejected must never be posted. Pass `--strict-evidence` for `--post`; for
-     `--dry-run` the same gate runs with evidence optional.
+     `body` in the gate's JSON is the posted body: print it with `jq -r .body <...>.gate.json` and
+     submit exactly that. An empty body is the expected result when every finding is anchored, so
+     never write a summary to fill it.
+     If it exits non-zero, do not post and do not print a DRAFT block: fix the findings or the report
+     and re-run, or print `--- REVIEW BLOCKED (claim verification failed) ---` plus the gate errors
+     and stop. A draft the gate rejected must never be posted. Pass `--strict-evidence` for `--post`;
+     for `--dry-run` the same gate runs with evidence optional.
    - With `--dry-run`: after all tool work, worktree removal, and the claim gate passes, print
      exactly one final message (a skip above is the whole output instead):
      `--- DRAFT REVIEW (<forge> <target>, <VERDICT>, reviewer <identity>) ---`
