@@ -37,7 +37,8 @@ and draft thread replies and pause for approval before editing or pushing. Unatt
 (`--auto`) is allowed only when the user pre-authorized it; a `/pr-sweep` session is unattended
 (`PR_SWEEP=1`), so it reports its fix set and stops instead of pausing, and applies nothing unless
 `PR_SWEEP_APPLY=1` (`--apply`) is set. Verify (repo tests, lint, coverage), push, reply, update the
-cache, then wait again.
+cache, then wait again. Replying belongs to this loop, which unlike `/address-review` reports the
+pushed fix in the thread it answers.
 
 ## Several PRs
 
