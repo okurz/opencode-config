@@ -23,8 +23,11 @@ EVIDENCE = "$ make test\nexit=0\n"
 
 def pr_view(files=("t/01-foo.t",), reviews=None):
     return {
-        "reviews": reviews
-        or [{"author": {"login": BOT}, "submittedAt": "2026-11-27T10:00:00Z"}],
+        "reviews": (
+            [{"author": {"login": BOT}, "submittedAt": "2026-11-27T10:00:00Z"}]
+            if reviews is None
+            else reviews
+        ),
         "reviewDecision": "",
         "statusCheckRollup": [],
         "files": [{"path": path} for path in files],
@@ -69,6 +72,8 @@ class Gate:
         evidence=EVIDENCE,
         strict=False,
         view=None,
+        bot=BOT,
+        gh_json=None,
     ):
         paths = {}
         for name, content in (
@@ -90,10 +95,10 @@ class Gate:
             str(paths["draft.md"]),
             "--report",
             str(paths["report.md"]),
-            "--bot",
-            BOT,
             "--json",
         ]
+        if bot:
+            argv += ["--bot", bot]
         for name, data in (
             ("inline.json", inline),
             ("threads.json", threads),
@@ -109,11 +114,14 @@ class Gate:
         if strict:
             argv.append("--strict-evidence")
         view = view or pr_view()
-        self.monkeypatch.setattr(
-            self.module,
-            "gh_json",
-            lambda args: view if args[0] == "pr" else {"login": BOT},
-        )
+        if gh_json is not None:
+            self.monkeypatch.setattr(self.module, "gh_json", gh_json)
+        else:
+            self.monkeypatch.setattr(
+                self.module,
+                "gh_json",
+                lambda args: view if args[0] == "pr" else {"login": BOT},
+            )
         self.monkeypatch.setattr(
             self.module,
             "run",
@@ -358,3 +366,32 @@ def test_allows_an_inline_comment_next_to_a_bot_thread_or_a_human_one(gate):
     ]
     code, out = gate(inline=inline, threads=threads)
     assert code == 0, out["errors"]
+
+
+def test_reads_the_bot_login_from_the_forge_when_none_is_passed(gate):
+    threads = [comment(7, "The fetch_data point.")]
+    code, out = gate(threads=threads, bot="")
+    assert code == 0, out["errors"]
+    assert out["still_open"] == [7]
+
+
+def test_refuses_threads_without_a_bot_login(gate):
+    threads = [comment(7, "The fetch_data point.")]
+
+    def gh(args):
+        if args[0] == "pr":
+            return pr_view()
+        raise RuntimeError("bad credentials")
+
+    code, out = gate(threads=threads, bot="", gh_json=gh)
+    assert code == 1
+    assert any(
+        "cannot tell which comments are the bot's" in error for error in out["errors"]
+    )
+
+
+def test_counts_without_a_review_date_when_the_bot_commented_but_never_reviewed(gate):
+    threads = [comment(7, "The fetch_data point.")]
+    code, out = gate(threads=threads, view=pr_view(reviews=[]))
+    assert code == 0, out["errors"]
+    assert out["one_liner"] == "1 point still open."
